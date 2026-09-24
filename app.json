@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "GadgetStock",
+    "slug": "gadgetstock",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#4F46E5",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "GadgetStock necesita acceso a tus fotos para agregar la imagen del producto.",
+          "cameraPermission": "GadgetStock necesita la cámara para sacarle una foto al producto."
+        }
+      ]
+    ]
+  }
+}
