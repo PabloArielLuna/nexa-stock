@@ -47,6 +47,17 @@ const FormularioProductoScreen: React.FC<Props> = ({ navigation, route }) => {
           <Text style={typography.h3}>Datos del producto</Text>
 
           <CampoTexto
+            label="SKU *"
+            value={form.sku}
+            onChangeText={(v) => setField('sku', v.toUpperCase())}
+            onBlur={() => marcarTocado('sku')}
+            error={errorDe('sku')}
+            placeholder="Ej: AUR01"
+            ayuda="Tu código: 3 a 12 letras o números. Único dentro de tu inventario."
+            autoCapitalize="characters"
+            maxLength={12}
+          />
+          <CampoTexto
             label="Nombre *"
             value={form.nombre}
             onChangeText={(v) => setField('nombre', v)}
@@ -130,6 +141,16 @@ const FormularioProductoScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
 
           {/* Vista previa calculada: estado derivado del ViewModel */}
+          <CampoTexto
+            label="Recargo para presupuestos (%)"
+            value={form.recargoPresupuesto}
+            keyboardType="number-pad"
+            maxLength={4}
+            ayuda="Se suma al costo. Podés ajustarlo para este SKU en cada presupuesto."
+            onChangeText={(v) => setField('recargoPresupuesto', soloNumeros(v))}
+            onBlur={() => marcarTocado('recargoPresupuesto')}
+            error={errorDe('recargoPresupuesto')}
+          />
           {vm.vistaPrevia && vm.vistaPrevia.ganancia >= 0 && (
             <View style={styles.vistaPrevia}>
               <Text style={styles.textoVistaPrevia}>
@@ -142,6 +163,16 @@ const FormularioProductoScreen: React.FC<Props> = ({ navigation, route }) => {
         {/* --- Stock --- */}
         <View style={[globalStyles.card, styles.seccion]}>
           <Text style={typography.h3}>Stock</Text>
+          {vm.requiereMotivo && (
+            <CampoTexto
+              label="Motivo del ajuste *"
+              value={vm.motivoAjuste}
+              onChangeText={vm.setMotivoAjuste}
+              maxLength={200}
+              placeholder="Ej: Reposición, recuento o mercadería dañada"
+              ayuda="Quedará registrado junto al stock anterior y nuevo."
+            />
+          )}
           <View style={styles.fila}>
             <CampoTexto
               label="Unidades *"

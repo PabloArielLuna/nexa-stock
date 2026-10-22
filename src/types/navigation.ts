@@ -13,12 +13,25 @@ export type InventarioStackParamList = {
   DetalleProducto: { productoId: string };
   FormularioProducto: { productoId?: string }; // opcional: sin id = alta, con id = edición
   RegistrarVenta: { productoId: string };
+  Escanear: { vincularProductoId: string } | undefined;
+  Nivel: undefined;
+  Respaldo: undefined;
+  Movimientos: undefined;
 };
 
 /** Pestañas del menú inferior. */
 export type RootTabParamList = {
+  Inicio: undefined;
+  Cuenta: undefined;
   // NavigatorScreenParams permite navegar desde otra pestaña a una pantalla del stack
   InventarioTab: NavigatorScreenParams<InventarioStackParamList> | undefined;
-  Ventas: undefined;
+  Ventas: NavigatorScreenParams<VentasStackParamList> | undefined;
   Resumen: undefined;
+};
+
+export type VentasStackParamList = {
+  ListaVentas: undefined;
+  Presupuesto: { numero?: string } | undefined;
+  Marca: undefined;
+  PresupuestosGuardados: undefined;
 };

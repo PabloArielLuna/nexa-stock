@@ -6,11 +6,13 @@ import { CategoriaId } from './models';
  * convierten a number recién al guardar.
  */
 export type FormProducto = {
+  sku: string;
   nombre: string;
   marca: string;
   categoria: CategoriaId | null;
   costo: string;
   precio: string;
+  recargoPresupuesto: string;
   stock: string;
   stockMinimo: string;
   reacondicionado: boolean;

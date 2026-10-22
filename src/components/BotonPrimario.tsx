@@ -3,6 +3,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, ViewStyle } from
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../styles/colors';
 import { radius, spacing } from '../styles/global';
+import { feedback } from '../services/dispositivo';
 
 type Variante = 'primario' | 'secundario' | 'peligro';
 
@@ -31,13 +32,16 @@ const BotonPrimario: React.FC<Props> = ({
   deshabilitado = false,
   estilo,
 }) => {
-  const colorTexto = variante === 'primario' ? colors.white : COLOR_TEXTO[variante];
+  const colorTexto = variante === 'primario' ? colors.onPrimary : COLOR_TEXTO[variante];
   const inactivo = deshabilitado || cargando;
 
   return (
     <TouchableOpacity
       style={[styles.boton, styles[variante], inactivo && styles.deshabilitado, estilo]}
-      onPress={onPress}
+      onPress={() => {
+        feedback();
+        onPress();
+      }}
       disabled={inactivo}
       activeOpacity={0.75}
       accessibilityRole="button"

@@ -43,6 +43,7 @@ const TarjetaProducto: React.FC<Props> = ({ producto, onPress, onLongPress }) =>
           {producto.reacondicionado && ' · Reacond.'}
         </Text>
         <InsigniaStock stock={producto.stock} estado={estadoStock(producto)} />
+        <Text style={styles.subtitulo}>SKU: {producto.sku ?? 'Pendiente'}</Text>
       </View>
 
       <View style={styles.derecha}>

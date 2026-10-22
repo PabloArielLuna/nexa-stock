@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Venta } from '../types/models';
 import { colors } from '../styles/colors';
 import { globalStyles, radius, spacing } from '../styles/global';
-import { gananciaVenta, totalVenta } from '../utils/calculos';
+import { gananciaVenta } from '../utils/calculos';
 import { formatoFechaHora, formatoPrecio } from '../utils/formato';
 
 type Props = {
@@ -27,18 +27,26 @@ const TarjetaVenta: React.FC<Props> = ({ venta, onAnular }) => (
         {venta.cantidad} × {formatoPrecio(venta.precioUnitario)} · {formatoFechaHora(venta.fecha)}
       </Text>
       <Text style={styles.ganancia}>Ganancia {formatoPrecio(gananciaVenta(venta))}</Text>
+      {venta.anulacion && (
+        <Text style={[styles.detalle, { color: colors.error }]}>
+          Anulada el {formatoFechaHora(venta.anulacion.fecha)} · {venta.anulacion.motivo}
+          {!venta.anulacion.stockRestituido && '\nSin devolución de stock: el producto ya no existía.'}
+        </Text>
+      )}
     </View>
 
     <View style={styles.derecha}>
-      <Text style={styles.total}>{formatoPrecio(totalVenta(venta))}</Text>
-      <TouchableOpacity
-        onPress={onAnular}
-        hitSlop={10}
-        accessibilityRole="button"
-        accessibilityLabel={`Anular venta de ${venta.productoNombre}`}
-      >
-        <Text style={styles.anular}>Anular</Text>
-      </TouchableOpacity>
+      <Text style={styles.total}>{formatoPrecio(venta.cantidad * venta.precioUnitario)}</Text>
+      {!venta.anulacion && (
+        <TouchableOpacity
+          onPress={onAnular}
+          hitSlop={10}
+          accessibilityRole="button"
+          accessibilityLabel={`Anular venta de ${venta.productoNombre}`}
+        >
+          <Text style={styles.anular}>Anular</Text>
+        </TouchableOpacity>
+      )}
     </View>
   </View>
 );

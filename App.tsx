@@ -3,6 +3,23 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { InventarioProvider } from './src/context/InventarioContext';
 import AppNavigator from './src/navigation/AppNavigator';
+import { PerfilProvider, usePerfil } from './src/context/PerfilContext';
+import PerfilesScreen from './src/screens/PerfilesScreen';
+import PantallaCarga from './src/components/PantallaCarga';
+import BloqueoApp from './src/components/BloqueoApp';
+
+function EspacioActual() {
+  const { activo, listo } = usePerfil();
+  if (!listo) return <PantallaCarga />;
+  if (!activo) return <PerfilesScreen />;
+  return (
+    <InventarioProvider key={activo.id} perfilId={activo.id}>
+      <BloqueoApp>
+        <AppNavigator />
+      </BloqueoApp>
+    </InventarioProvider>
+  );
+}
 
 /**
  * Punto de entrada "delgado" (Clase 12): sólo arma los proveedores
@@ -14,10 +31,10 @@ import AppNavigator from './src/navigation/AppNavigator';
 const App: React.FC = () => {
   return (
     <SafeAreaProvider>
-      <InventarioProvider>
-        <AppNavigator />
-        <StatusBar style="dark" />
-      </InventarioProvider>
+      <PerfilProvider>
+        <EspacioActual />
+        <StatusBar style="light" />
+      </PerfilProvider>
     </SafeAreaProvider>
   );
 };

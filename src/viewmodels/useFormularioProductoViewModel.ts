@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useInventario } from '../context/InventarioContext';
 import { elegirDeGaleria, tomarFoto } from '../services/camara';
 import { Errores, FormProducto } from '../types/formularios';
@@ -6,13 +6,18 @@ import { Producto, ProductoInput } from '../types/models';
 import { gananciaUnitaria, margenPorcentaje } from '../utils/calculos';
 import { avisar } from '../utils/dialogos';
 import { sinErrores, validarProducto } from '../utils/validaciones';
+import { usePerfil } from '../context/PerfilContext';
+import { normalizarSku } from '../utils/sku';
+import { motivoValido } from '../domain/inventario/movimientos';
 
 const FORM_VACIO: FormProducto = {
+  sku: '',
   nombre: '',
   marca: '',
   categoria: null,
   costo: '',
   precio: '',
+  recargoPresupuesto: '30',
   stock: '',
   stockMinimo: '2',
   reacondicionado: false,
@@ -21,11 +26,13 @@ const FORM_VACIO: FormProducto = {
 
 /** Convierte un producto existente al formato del formulario (números → texto). */
 const productoAForm = (p: Producto): FormProducto => ({
+  sku: p.sku ?? '',
   nombre: p.nombre,
   marca: p.marca,
   categoria: p.categoria,
   costo: String(p.costo),
   precio: String(p.precio),
+  recargoPresupuesto: String(p.recargoPresupuesto ?? 30),
   stock: String(p.stock),
   stockMinimo: String(p.stockMinimo),
   reacondicionado: p.reacondicionado,
@@ -41,6 +48,7 @@ const productoAForm = (p: Producto): FormProducto => ({
  *   errores en rojo antes de que empiece a escribir.
  */
 export const useFormularioProductoViewModel = (productoId?: string) => {
+  const { activo, invitado } = usePerfil();
   const { productos, obtenerProducto, agregarProducto, actualizarProducto } = useInventario();
   const productoEditado = productoId ? obtenerProducto(productoId) : undefined;
   const esEdicion = !!productoEditado;
@@ -50,6 +58,8 @@ export const useFormularioProductoViewModel = (productoId?: string) => {
     productoEditado ? productoAForm(productoEditado) : FORM_VACIO,
   );
   const [tocados, setTocados] = useState<Partial<Record<keyof FormProducto, boolean>>>({});
+  const enviado = useRef(false);
+  const [motivoAjuste, setMotivoAjuste] = useState('');
 
   const setField = <K extends keyof FormProducto>(campo: K, valor: FormProducto[K]) => {
     setForm((prev) => ({ ...prev, [campo]: valor }));
@@ -65,8 +75,12 @@ export const useFormularioProductoViewModel = (productoId?: string) => {
     [productos, productoId],
   );
 
-  const errores: Errores<FormProducto> = validarProducto(form, nombresExistentes);
-  const puedeGuardar = sinErrores(errores);
+  const skusExistentes = productos
+    .filter((p) => p.id !== productoId)
+    .flatMap((p) => [p.sku, p.codigoQr].filter((s): s is string => !!s));
+  const errores: Errores<FormProducto> = validarProducto(form, nombresExistentes, skusExistentes);
+  const requiereMotivo = !!productoEditado && Number(form.stock) !== productoEditado.stock;
+  const puedeGuardar = sinErrores(errores) && (!requiereMotivo || motivoValido(motivoAjuste));
 
   /** Muestra el error de un campo sólo si ya lo tocó o si tiene algo escrito. */
   const errorDe = (campo: keyof FormProducto): string | undefined =>
@@ -81,39 +95,56 @@ export const useFormularioProductoViewModel = (productoId?: string) => {
       : null;
 
   const cargarFoto = async (origen: 'camara' | 'galeria') => {
-    const resultado = origen === 'camara' ? await tomarFoto() : await elegirDeGaleria();
-    if (resultado.ok) {
-      setField('fotoUri', resultado.uri);
-    } else if (resultado.motivo === 'sin-permiso') {
-      avisar(
-        'Permiso necesario',
-        'Habilitá el acceso desde la configuración del teléfono para agregar la foto.',
-      );
+    if (!activo || invitado) return;
+    try {
+      const resultado = origen === 'camara' ? await tomarFoto(activo.id) : await elegirDeGaleria(activo.id);
+      if (resultado.ok) {
+        setField('fotoUri', resultado.uri);
+      } else if (resultado.motivo === 'sin-permiso') {
+        avisar(
+          'Permiso necesario',
+          'Habilitá el acceso desde la configuración del teléfono para agregar la foto.',
+        );
+      }
+    } catch {
+      avisar('No se pudo abrir la foto', 'Intentá nuevamente desde la cámara o la galería.');
     }
   };
 
   /** Guarda y devuelve true si salió bien (la pantalla decide a dónde navegar). */
   const guardar = (): boolean => {
-    if (!puedeGuardar || !form.categoria) return false;
+    if (!puedeGuardar || !form.categoria || enviado.current) return false;
+    enviado.current = true;
 
     const datos: ProductoInput = {
+      sku: normalizarSku(form.sku),
       nombre: form.nombre.trim(),
       marca: form.marca.trim(),
       categoria: form.categoria,
       costo: Number(form.costo),
       precio: Number(form.precio),
+      recargoPresupuesto: Number(form.recargoPresupuesto),
       stock: Number(form.stock),
       stockMinimo: Number(form.stockMinimo),
       reacondicionado: form.reacondicionado,
       fotoUri: form.fotoUri,
     };
 
-    if (productoEditado) actualizarProducto(productoEditado.id, datos);
-    else agregarProducto(datos);
-    return true;
+    try {
+      if (productoEditado) actualizarProducto(productoEditado.id, datos, motivoAjuste);
+      else agregarProducto(datos);
+      return true;
+    } catch {
+      enviado.current = false;
+      avisar('No se pudo guardar', 'Revisá que el SKU sea válido y no esté usado por otro producto.');
+      return false;
+    }
   };
 
   return {
+    motivoAjuste,
+    setMotivoAjuste,
+    requiereMotivo,
     form,
     setField,
     marcarTocado,

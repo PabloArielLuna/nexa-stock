@@ -23,7 +23,7 @@ export const useDetalleProductoViewModel = (productoId: string) => {
     valorEnStock: producto.stock * producto.costo,
     unidadesVendidas,
     puedeVender: producto.stock > 0,
-    eliminar: () => eliminarProducto(producto.id),
+    eliminar: (motivo: string) => eliminarProducto(producto.id, motivo),
     compartir: () => compartirProducto(producto),
   } as const;
 };

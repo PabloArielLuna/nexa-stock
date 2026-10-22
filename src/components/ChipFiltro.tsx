@@ -17,11 +17,11 @@ const ChipFiltro: React.FC<Props> = ({ label, activo, onPress, icono, color = co
   <TouchableOpacity
     onPress={onPress}
     activeOpacity={0.7}
-    style={[styles.chip, activo && { backgroundColor: color, borderColor: color }]}
+    style={[styles.chip, activo && { backgroundColor: colors.primary, borderColor: colors.primary }]}
     accessibilityRole="button"
     accessibilityState={{ selected: activo }}
   >
-    {icono && <Ionicons name={icono} size={15} color={activo ? colors.white : colors.textMuted} />}
+    {icono && <Ionicons name={icono} size={15} color={activo ? colors.onPrimary : colors.textMuted} />}
     <Text style={[styles.texto, activo && styles.textoActivo]}>{label}</Text>
   </TouchableOpacity>
 );
@@ -41,5 +41,5 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   texto: { fontSize: 14, fontWeight: '600', color: colors.textMuted },
-  textoActivo: { color: colors.white },
+  textoActivo: { color: colors.onPrimary },
 });

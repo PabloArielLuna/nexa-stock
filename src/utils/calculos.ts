@@ -7,6 +7,10 @@ import { EstadoStock, Producto, Venta } from '../types/models';
 
 export const gananciaUnitaria = (p: Pick<Producto, 'costo' | 'precio'>): number => p.precio - p.costo;
 
+/** Recargo sobre costo, distinto del margen sobre el precio de venta. */
+export const precioConRecargo = (costo: number, porcentaje: number): number =>
+  Math.round(costo * (1 + porcentaje / 100));
+
 /** Margen sobre el precio de venta, en %. */
 export const margenPorcentaje = (p: Pick<Producto, 'costo' | 'precio'>): number =>
   p.precio > 0 ? Math.round(((p.precio - p.costo) / p.precio) * 100) : 0;
@@ -17,9 +21,10 @@ export const estadoStock = (p: Pick<Producto, 'stock' | 'stockMinimo'>): EstadoS
   return 'ok';
 };
 
-export const totalVenta = (v: Venta): number => v.cantidad * v.precioUnitario;
+export const totalVenta = (v: Venta): number => (v.anulacion ? 0 : v.cantidad * v.precioUnitario);
 
-export const gananciaVenta = (v: Venta): number => v.cantidad * (v.precioUnitario - v.costoUnitario);
+export const gananciaVenta = (v: Venta): number =>
+  v.anulacion ? 0 : v.cantidad * (v.precioUnitario - v.costoUnitario);
 
 /** ¿La fecha ISO cae en el mes y año actuales? */
 export const esDelMesActual = (fechaIso: string, hoy: Date = new Date()): boolean => {

@@ -16,6 +16,7 @@ const haceDias = (dias: number, hora = 12): string => {
 const productos: Producto[] = [
   {
     id: 'p1',
+    sku: 'BUDS6',
     nombre: 'Redmi Buds 6 Active',
     marca: 'Xiaomi',
     categoria: 'auriculares',
@@ -29,6 +30,7 @@ const productos: Producto[] = [
   },
   {
     id: 'p2',
+    sku: 'SONY520',
     nombre: 'WH-CH520',
     marca: 'Sony',
     categoria: 'auriculares',
@@ -42,6 +44,7 @@ const productos: Producto[] = [
   },
   {
     id: 'p3',
+    sku: 'JBLGO4',
     nombre: 'Go 4',
     marca: 'JBL',
     categoria: 'parlantes',
@@ -55,6 +58,7 @@ const productos: Producto[] = [
   },
   {
     id: 'p4',
+    sku: 'JBLFLIP6',
     nombre: 'Flip 6',
     marca: 'JBL',
     categoria: 'parlantes',
@@ -68,6 +72,7 @@ const productos: Producto[] = [
   },
   {
     id: 'p5',
+    sku: 'WATCH5',
     nombre: 'Redmi Watch 5 Active',
     marca: 'Xiaomi',
     categoria: 'smartwatches',
@@ -81,6 +86,7 @@ const productos: Producto[] = [
   },
   {
     id: 'p6',
+    sku: 'BAND9',
     nombre: 'Smart Band 9',
     marca: 'Xiaomi',
     categoria: 'smartwatches',
@@ -94,6 +100,7 @@ const productos: Producto[] = [
   },
   {
     id: 'p7',
+    sku: 'AWSE',
     nombre: 'Apple Watch SE',
     marca: 'Apple',
     categoria: 'smartwatches',
@@ -107,6 +114,7 @@ const productos: Producto[] = [
   },
   {
     id: 'p8',
+    sku: 'ANKER10K',
     nombre: 'PowerCore 10000',
     marca: 'Anker',
     categoria: 'powerbanks',
@@ -120,6 +128,7 @@ const productos: Producto[] = [
   },
   {
     id: 'p9',
+    sku: 'USBC20W',
     nombre: 'Cargador USB-C 20W',
     marca: 'Samsung',
     categoria: 'cargadores',

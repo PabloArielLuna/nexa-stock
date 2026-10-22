@@ -13,6 +13,7 @@ export const compartirProducto = async (producto: Producto): Promise<void> => {
 
   const mensaje = [
     `🎧 ${producto.nombre} — ${producto.marca}`,
+    ...(producto.sku ? [`SKU: ${producto.sku}`] : []),
     `${estado} · ${formatoPrecio(producto.precio)}`,
     disponibilidad,
     '¡Consultame por medios de pago!',

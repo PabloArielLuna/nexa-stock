@@ -6,7 +6,7 @@ export const spacing = {
   xs: 4,
   sm: 8,
   md: 12,
-  lg: 16,
+  lg: 20,
   xl: 24,
   xxl: 32,
 };
@@ -33,7 +33,8 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: radius.lg,
     padding: spacing.lg,
-    // Sombra: propiedades de iOS + elevation para Android (Clase 2)
+    borderWidth: 1,
+    borderColor: colors.border,
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowRadius: 8,

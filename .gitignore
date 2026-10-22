@@ -32,6 +32,15 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Private application exports and signing credentials
+*.nexa
+credentials.json
+service-account*.json
 
 # typescript
 *.tsbuildinfo

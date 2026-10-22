@@ -2,17 +2,16 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import BotonPrimario from '../components/BotonPrimario';
 import FotoProducto from '../components/FotoProducto';
 import InsigniaStock from '../components/InsigniaStock';
 import TarjetaEstadistica from '../components/TarjetaEstadistica';
+import Encabezado from '../components/Encabezado';
 import { colors } from '../styles/colors';
 import { globalStyles, radius, spacing } from '../styles/global';
 import { typography } from '../styles/typography';
 import { RootTabParamList } from '../types/navigation';
 import { estadoStock } from '../utils/calculos';
-import { confirmar } from '../utils/dialogos';
-import { formatoFecha, formatoPrecio } from '../utils/formato';
+import { formatoPrecio } from '../utils/formato';
 import { useResumenViewModel } from '../viewmodels/useResumenViewModel';
 
 type Props = BottomTabScreenProps<RootTabParamList, 'Resumen'>;
@@ -30,22 +29,9 @@ const ResumenScreen: React.FC<Props> = ({ navigation }) => {
     });
   };
 
-  const pedirRestaurar = () => {
-    confirmar({
-      titulo: 'Restaurar datos de ejemplo',
-      mensaje: 'Se reemplazan todos tus productos y ventas por los de ejemplo.',
-      textoConfirmar: 'Restaurar',
-      destructivo: true,
-      onConfirmar: vm.restaurarDatosDeEjemplo,
-    });
-  };
-
   return (
     <ScrollView style={globalStyles.screen} contentContainerStyle={globalStyles.scrollContent}>
-      <View>
-        <Text style={typography.small}>{formatoFecha(new Date())}</Text>
-        <Text style={typography.h1}>Tu negocio</Text>
-      </View>
+      <Encabezado titulo="La visión completa." detalle="Entendé tu negocio. Decidí con información." />
 
       {/* Grilla de indicadores: flexWrap + flexBasis 45% = 2 columnas */}
       <View style={styles.grilla}>
@@ -122,13 +108,6 @@ const ResumenScreen: React.FC<Props> = ({ navigation }) => {
           ))
         )}
       </View>
-
-      <BotonPrimario
-        label="Restaurar datos de ejemplo"
-        icono="refresh"
-        variante="secundario"
-        onPress={pedirRestaurar}
-      />
     </ScrollView>
   );
 };

@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
+import MotivoModal from '../components/MotivoModal';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import ChipFiltro from '../components/ChipFiltro';
 import EstadoVacio from '../components/EstadoVacio';
 import TarjetaVenta from '../components/TarjetaVenta';
+import Encabezado from '../components/Encabezado';
+import BotonPrimario from '../components/BotonPrimario';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { VentasStackParamList } from '../types/navigation';
 import { colors } from '../styles/colors';
 import { globalStyles, spacing } from '../styles/global';
 import { Venta } from '../types/models';
-import { confirmar } from '../utils/dialogos';
 import { formatoPrecio } from '../utils/formato';
 import { Periodo, useVentasViewModel } from '../viewmodels/useVentasViewModel';
 
@@ -17,22 +21,40 @@ const PERIODOS: { id: Periodo; label: string }[] = [
 ];
 
 /** VISTA: historial de ventas con totales del período elegido. */
-const VentasScreen: React.FC = () => {
+const VentasScreen: React.FC<NativeStackScreenProps<VentasStackParamList, 'ListaVentas'>> = ({
+  navigation,
+}) => {
   const vm = useVentasViewModel();
+  const [ventaAAnular, setVentaAAnular] = useState<Venta | null>(null);
 
   const pedirAnular = (venta: Venta) => {
-    confirmar({
-      titulo: 'Anular venta',
-      mensaje: `Se van a devolver ${venta.cantidad} unidad(es) de "${venta.productoNombre}" al stock.`,
-      textoConfirmar: 'Anular',
-      destructivo: true,
-      onConfirmar: () => vm.anularVenta(venta.id),
-    });
+    setVentaAAnular(venta);
   };
 
   return (
     <View style={globalStyles.screen}>
+      <MotivoModal
+        visible={!!ventaAAnular}
+        titulo="Anular venta"
+        detalle={`La venta quedará en el historial con su motivo. Se devolverán ${ventaAAnular?.cantidad ?? 0} unidades si el producto sigue en tu inventario.`}
+        onCancelar={() => setVentaAAnular(null)}
+        onConfirmar={(motivo) => {
+          if (ventaAAnular) vm.anularVenta(ventaAAnular.id, motivo);
+        }}
+      />
       <View style={styles.encabezado}>
+        <Encabezado titulo="Cada venta cuenta." detalle="Tu actividad, con todos los números claros." />
+        <BotonPrimario
+          label="Crear presupuesto PDF"
+          icono="document-text-outline"
+          onPress={() => navigation.navigate('Presupuesto')}
+        />
+        <BotonPrimario
+          label="Presupuestos guardados"
+          variante="secundario"
+          icono="archive-outline"
+          onPress={() => navigation.navigate('PresupuestosGuardados')}
+        />
         <View style={styles.chips}>
           {PERIODOS.map((p) => (
             <ChipFiltro

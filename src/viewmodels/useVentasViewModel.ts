@@ -8,12 +8,12 @@ const esDeHoy = (fechaIso: string) => new Date(fechaIso).toDateString() === new 
 
 /** VIEWMODEL del historial de ventas, con filtro por período y totales. */
 export const useVentasViewModel = () => {
-  const { ventas, anularVenta } = useInventario();
+  const { historialVentas, anularVenta } = useInventario();
   const [periodo, setPeriodo] = useState<Periodo>('mes');
 
   const ventasVisibles = useMemo(
     () =>
-      ventas
+      historialVentas
         .filter((v) => {
           if (periodo === 'hoy') return esDeHoy(v.fecha);
           if (periodo === 'mes') return esDelMesActual(v.fecha);
@@ -21,12 +21,12 @@ export const useVentasViewModel = () => {
         })
         // la más reciente primero
         .sort((a, b) => b.fecha.localeCompare(a.fecha)),
-    [ventas, periodo],
+    [historialVentas, periodo],
   );
 
   const ingresos = ventasVisibles.reduce((acc, v) => acc + totalVenta(v), 0);
   const ganancia = ventasVisibles.reduce((acc, v) => acc + gananciaVenta(v), 0);
-  const unidades = ventasVisibles.reduce((acc, v) => acc + v.cantidad, 0);
+  const unidades = ventasVisibles.reduce((acc, v) => acc + (v.anulacion ? 0 : v.cantidad), 0);
 
   return { ventasVisibles, periodo, setPeriodo, ingresos, ganancia, unidades, anularVenta };
 };

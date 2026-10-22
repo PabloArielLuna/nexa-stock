@@ -17,7 +17,7 @@ type Props = {
  */
 const BotonFlotante: React.FC<Props> = ({ label, icono, onPress }) => (
   <TouchableOpacity style={styles.fab} onPress={onPress} activeOpacity={0.8} accessibilityRole="button">
-    <Ionicons name={icono} size={22} color={colors.white} />
+    <Ionicons name={icono} size={22} color={colors.onPrimary} />
     <Text style={styles.texto}>{label}</Text>
   </TouchableOpacity>
 );
@@ -42,5 +42,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     elevation: 6,
   },
-  texto: { color: colors.white, fontSize: 15, fontWeight: '700' },
+  texto: { color: colors.onPrimary, fontSize: 15, fontWeight: '700' },
 });

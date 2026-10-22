@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useInventario } from '../context/InventarioContext';
 import { FormVenta } from '../types/formularios';
 import { sinErrores, validarVenta } from '../utils/validaciones';
@@ -7,6 +7,7 @@ import { sinErrores, validarVenta } from '../utils/validaciones';
 export const useRegistrarVentaViewModel = (productoId: string) => {
   const { obtenerProducto, registrarVenta } = useInventario();
   const producto = obtenerProducto(productoId);
+  const enviado = useRef(false);
 
   const [form, setForm] = useState<FormVenta>({
     cantidad: '1',
@@ -38,8 +39,10 @@ export const useRegistrarVentaViewModel = (productoId: string) => {
   };
 
   const confirmar = (): boolean => {
-    if (!puedeConfirmar || !producto) return false;
-    return registrarVenta(producto.id, cantidad, precio) !== null;
+    if (!puedeConfirmar || !producto || enviado.current) return false;
+    const exito = registrarVenta(producto.id, cantidad, precio) !== null;
+    enviado.current = exito;
+    return exito;
   };
 
   return {

@@ -1,25 +1,24 @@
-/**
- * Paleta centralizada (Clases 10 y 12).
- * Si cambiás un color acá, cambia en toda la app.
- */
+/** NEXA · sistema visual compartido. */
 export const colors = {
-  primary: '#4F46E5',
-  primaryLight: '#EEF2FF',
-  primaryDark: '#3730A3',
-
-  background: '#F4F5FA',
-  surface: '#FFFFFF',
-  border: '#E5E7EB',
-
-  text: '#111827',
-  textMuted: '#6B7280',
-  textLight: '#9CA3AF',
+  primary: '#527AFF',
+  primaryLight: '#18284D',
+  primaryDark: '#2457FF',
+  accent: '#D6F578',
+  accentLight: '#273322',
+  cyan: '#65D8ED',
+  violet: '#B29BFF',
+  background: '#0B0F19',
+  surface: '#141B2B',
+  border: '#293349',
+  text: '#F1F4FC',
+  textMuted: '#AAB5CC',
+  textLight: '#8896B1',
   white: '#FFFFFF',
-
-  success: '#059669',
-  successLight: '#ECFDF5',
-  warning: '#D97706',
-  warningLight: '#FFFBEB',
-  error: '#DC2626',
-  errorLight: '#FEF2F2',
+  onPrimary: '#060C1B',
+  success: '#B8E880',
+  successLight: '#25331E',
+  warning: '#EFC383',
+  warningLight: '#362D20',
+  error: '#FF9991',
+  errorLight: '#382322',
 };

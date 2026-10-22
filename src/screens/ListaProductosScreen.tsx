@@ -1,5 +1,8 @@
-import React from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import MotivoModal from '../components/MotivoModal';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import Encabezado from '../components/Encabezado';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import BarraBusqueda from '../components/BarraBusqueda';
 import BotonFlotante from '../components/BotonFlotante';
@@ -11,8 +14,8 @@ import { globalStyles, spacing } from '../styles/global';
 import { InventarioStackParamList } from '../types/navigation';
 import { Producto } from '../types/models';
 import { CATEGORIAS } from '../utils/categorias';
-import { confirmar } from '../utils/dialogos';
 import { useInventarioViewModel } from '../viewmodels/useInventarioViewModel';
+import { usePerfil } from '../context/PerfilContext';
 
 type Props = NativeStackScreenProps<InventarioStackParamList, 'ListaProductos'>;
 
@@ -22,23 +25,42 @@ type Props = NativeStackScreenProps<InventarioStackParamList, 'ListaProductos'>;
  */
 const ListaProductosScreen: React.FC<Props> = ({ navigation }) => {
   const vm = useInventarioViewModel();
+  const { invitado } = usePerfil();
+  const [aEliminar, setAEliminar] = useState<Producto | null>(null);
 
   const pedirEliminar = (producto: Producto) => {
-    confirmar({
-      titulo: 'Eliminar producto',
-      mensaje: `¿Seguro que querés eliminar "${producto.nombre}"? Esta acción no se puede deshacer.`,
-      textoConfirmar: 'Eliminar',
-      destructivo: true,
-      onConfirmar: () => vm.eliminarProducto(producto.id),
-    });
+    setAEliminar(producto);
   };
 
   return (
     <View style={globalStyles.screen}>
+      <MotivoModal
+        visible={!!aEliminar}
+        titulo="Dar de baja un producto"
+        detalle={`Se quitará ${aEliminar?.nombre ?? ''} del catálogo. Sus ventas y movimientos se conservarán.`}
+        onCancelar={() => setAEliminar(null)}
+        onConfirmar={(motivo) => {
+          if (aEliminar) vm.eliminarProducto(aEliminar.id, motivo);
+        }}
+      />
       <View style={styles.encabezado}>
+        <Encabezado
+          titulo={invitado ? 'El catálogo.' : 'Tu inventario.'}
+          detalle={invitado ? 'Productos de ejemplo para explorar NEXA.' : 'Cada producto, en su lugar.'}
+          accion={
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel="Escanear un producto"
+              onPress={() => navigation.navigate('Escanear')}
+              style={{ padding: 14, borderRadius: 16, backgroundColor: colors.primaryLight }}
+            >
+              <Ionicons name="scan-outline" size={25} color={colors.primary} />
+            </TouchableOpacity>
+          }
+        />
         <Text style={styles.resumen}>
           {vm.totalProductos} productos · {vm.totalUnidades} unidades
-          {vm.cantidadConAlerta > 0 && (
+          {!invitado && vm.cantidadConAlerta > 0 && (
             <Text style={styles.alerta}> · {vm.cantidadConAlerta} para reponer</Text>
           )}
         </Text>
@@ -46,7 +68,7 @@ const ListaProductosScreen: React.FC<Props> = ({ navigation }) => {
         <BarraBusqueda
           value={vm.busqueda}
           onChangeText={vm.setBusqueda}
-          placeholder="Buscar por nombre o marca"
+          placeholder="Buscar por SKU, nombre o marca"
         />
 
         {/* Filtros por categoría: se scrollean de costado */}
@@ -72,7 +94,7 @@ const ListaProductosScreen: React.FC<Props> = ({ navigation }) => {
           <TarjetaProducto
             producto={item}
             onPress={() => navigation.navigate('DetalleProducto', { productoId: item.id })}
-            onLongPress={() => pedirEliminar(item)}
+            onLongPress={invitado ? undefined : () => pedirEliminar(item)}
           />
         )}
         contentContainerStyle={styles.lista}
@@ -93,17 +115,19 @@ const ListaProductosScreen: React.FC<Props> = ({ navigation }) => {
           )
         }
         ListFooterComponent={
-          vm.productosVisibles.length > 0 ? (
+          !invitado && vm.productosVisibles.length > 0 ? (
             <Text style={styles.pista}>Mantené presionado un producto para eliminarlo</Text>
           ) : null
         }
       />
 
-      <BotonFlotante
-        label="Nuevo"
-        icono="add"
-        onPress={() => navigation.navigate('FormularioProducto', {})}
-      />
+      {!invitado && (
+        <BotonFlotante
+          label="Nuevo"
+          icono="add"
+          onPress={() => navigation.navigate('FormularioProducto', {})}
+        />
+      )}
     </View>
   );
 };

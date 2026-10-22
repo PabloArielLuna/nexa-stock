@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import MotivoModal from '../components/MotivoModal';
+import EtiquetaProducto from '../components/EtiquetaProducto';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import BotonPrimario from '../components/BotonPrimario';
@@ -11,9 +13,11 @@ import { globalStyles, radius, spacing } from '../styles/global';
 import { typography } from '../styles/typography';
 import { InventarioStackParamList } from '../types/navigation';
 import { obtenerCategoria } from '../utils/categorias';
-import { confirmar } from '../utils/dialogos';
+import { avisar, confirmar } from '../utils/dialogos';
+import { useInventario } from '../context/InventarioContext';
 import { formatoPrecio } from '../utils/formato';
 import { useDetalleProductoViewModel } from '../viewmodels/useDetalleProductoViewModel';
+import { usePerfil } from '../context/PerfilContext';
 
 type Props = NativeStackScreenProps<InventarioStackParamList, 'DetalleProducto'>;
 
@@ -22,6 +26,9 @@ const DetalleProductoScreen: React.FC<Props> = ({ navigation, route }) => {
   // Recibo sólo el id por parámetro (Clase 6) y el ViewModel busca el resto.
   const { productoId } = route.params;
   const vm = useDetalleProductoViewModel(productoId);
+  const { invitado, salir } = usePerfil();
+  const { vincularQr } = useInventario();
+  const [eliminando, setEliminando] = useState(false);
 
   // Renderizado condicional: el producto pudo haber sido eliminado.
   if (!vm.producto) {
@@ -41,24 +48,26 @@ const DetalleProductoScreen: React.FC<Props> = ({ navigation, route }) => {
   const categoria = obtenerCategoria(producto.categoria);
 
   const pedirEliminar = () => {
-    confirmar({
-      titulo: 'Eliminar producto',
-      mensaje: `¿Seguro que querés eliminar "${producto.nombre}"? Las ventas ya registradas se conservan.`,
-      textoConfirmar: 'Eliminar',
-      destructivo: true,
-      onConfirmar: () => {
-        navigation.goBack();
-        vm.eliminar();
-      },
-    });
+    setEliminando(true);
   };
 
   return (
     <ScrollView style={globalStyles.screen} contentContainerStyle={globalStyles.scrollContent}>
+      <MotivoModal
+        visible={eliminando}
+        titulo="Dar de baja el producto"
+        detalle="El producto sale del catálogo, pero conserva sus ventas y movimientos."
+        onCancelar={() => setEliminando(false)}
+        onConfirmar={(motivo) => {
+          vm.eliminar(motivo);
+          navigation.goBack();
+        }}
+      />
       {/* Cabecera con foto, nombre y precio */}
       <View style={[globalStyles.card, styles.cabecera]}>
         <FotoProducto uri={producto.fotoUri} categoria={producto.categoria} tamanio={112} />
         <Text style={[typography.h2, styles.centrado]}>{producto.nombre}</Text>
+        <Text style={typography.small}>SKU: {producto.sku ?? 'Pendiente de asignar'}</Text>
         <Text style={typography.small}>
           {producto.marca} · {categoria.nombre}
         </Text>
@@ -74,50 +83,96 @@ const DetalleProductoScreen: React.FC<Props> = ({ navigation, route }) => {
       </View>
 
       {/* Números del producto */}
-      <View style={globalStyles.card}>
-        <Text style={[typography.h3, styles.tituloSeccion]}>Números</Text>
-        <FilaDato etiqueta="Costo por unidad" valor={formatoPrecio(producto.costo)} />
-        <FilaDato
-          etiqueta="Ganancia por unidad"
-          valor={`${formatoPrecio(vm.ganancia)} (${vm.margen}%)`}
-          colorValor={colors.success}
-        />
-        <FilaDato etiqueta="Stock mínimo" valor={`${producto.stockMinimo} u.`} />
-        <FilaDato etiqueta="Capital invertido en stock" valor={formatoPrecio(vm.valorEnStock)} />
-        <FilaDato etiqueta="Unidades vendidas" valor={String(vm.unidadesVendidas)} />
-      </View>
-
-      {/* Acciones */}
-      <View style={styles.acciones}>
-        <BotonPrimario
-          label={vm.puedeVender ? 'Registrar venta' : 'Sin stock para vender'}
-          icono="cart"
-          deshabilitado={!vm.puedeVender}
-          onPress={() => navigation.navigate('RegistrarVenta', { productoId: producto.id })}
-        />
-        <View style={styles.filaBotones}>
-          <BotonPrimario
-            label="Editar"
-            icono="create-outline"
-            variante="secundario"
-            estilo={styles.botonMitad}
-            onPress={() => navigation.navigate('FormularioProducto', { productoId: producto.id })}
+      {!invitado && (
+        <View style={globalStyles.card}>
+          <Text style={[typography.h3, styles.tituloSeccion]}>Números</Text>
+          <FilaDato etiqueta="Costo por unidad" valor={formatoPrecio(producto.costo)} />
+          <FilaDato
+            etiqueta="Ganancia por unidad"
+            valor={`${formatoPrecio(vm.ganancia)} (${vm.margen}%)`}
+            colorValor={colors.success}
           />
+          <FilaDato etiqueta="Stock mínimo" valor={`${producto.stockMinimo} u.`} />
+          <FilaDato etiqueta="Capital invertido en stock" valor={formatoPrecio(vm.valorEnStock)} />
+          <FilaDato etiqueta="Unidades vendidas" valor={String(vm.unidadesVendidas)} />
+        </View>
+      )}
+
+      <EtiquetaProducto id={producto.id} nombre={producto.nombre} sku={producto.sku} />
+      {!invitado && (
+        <View style={[globalStyles.card, { gap: 16 }]}>
+          <Text style={typography.h3}>Tus etiquetas impresas</Text>
+          <Text style={typography.small}>
+            {producto.codigoQr
+              ? 'Tenés un QR propio vinculado. Al leerlo desde NEXA verás el precio y stock actuales.'
+              : '¿Ya mandaste a hacer tus QR? Vinculá la etiqueta de este producto para encontrarlo al escanearla.'}
+          </Text>
           <BotonPrimario
-            label="Compartir"
-            icono="share-social-outline"
+            label={producto.codigoQr ? 'Reemplazar mi QR' : 'Vincular mi QR'}
+            icono="scan-outline"
             variante="secundario"
-            estilo={styles.botonMitad}
-            onPress={vm.compartir}
+            onPress={() => navigation.navigate('Escanear', { vincularProductoId: producto.id })}
+          />
+          {!!producto.codigoQr && (
+            <BotonPrimario
+              label="Desvincular mi QR"
+              variante="secundario"
+              onPress={() =>
+                confirmar({
+                  titulo: 'Desvincular etiqueta',
+                  mensaje: 'Tu producto se conserva. Esta etiqueta propia dejará de encontrarlo en NEXA.',
+                  textoConfirmar: 'Desvincular',
+                  onConfirmar: () => {
+                    try {
+                      vincularQr(producto.id, null);
+                    } catch {
+                      avisar('No se pudo desvincular', 'Volvé a abrir tu inventario e intentá de nuevo.');
+                    }
+                  },
+                })
+              }
+            />
+          )}
+        </View>
+      )}
+      {/* Acciones */}
+      {invitado ? (
+        <View style={styles.acciones}>
+          <Text style={typography.small}>Iniciá sesión para gestionar tus productos y ventas.</Text>
+          <BotonPrimario label="Crear mi espacio o ingresar" onPress={salir} />
+        </View>
+      ) : (
+        <View style={styles.acciones}>
+          <BotonPrimario
+            label={vm.puedeVender ? 'Registrar venta' : 'Sin stock para vender'}
+            icono="cart"
+            deshabilitado={!vm.puedeVender}
+            onPress={() => navigation.navigate('RegistrarVenta', { productoId: producto.id })}
+          />
+          <View style={styles.filaBotones}>
+            <BotonPrimario
+              label="Editar"
+              icono="create-outline"
+              variante="secundario"
+              estilo={styles.botonMitad}
+              onPress={() => navigation.navigate('FormularioProducto', { productoId: producto.id })}
+            />
+            <BotonPrimario
+              label="Compartir"
+              icono="share-social-outline"
+              variante="secundario"
+              estilo={styles.botonMitad}
+              onPress={vm.compartir}
+            />
+          </View>
+          <BotonPrimario
+            label="Eliminar producto"
+            icono="trash-outline"
+            variante="peligro"
+            onPress={pedirEliminar}
           />
         </View>
-        <BotonPrimario
-          label="Eliminar producto"
-          icono="trash-outline"
-          variante="peligro"
-          onPress={pedirEliminar}
-        />
-      </View>
+      )}
     </ScrollView>
   );
 };

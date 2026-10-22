@@ -26,7 +26,7 @@ export const useInventarioViewModel = () => {
     const texto = normalizar(busqueda.trim());
     return productos
       .filter((p) => filtro === 'todas' || p.categoria === filtro)
-      .filter((p) => !texto || normalizar(`${p.nombre} ${p.marca}`).includes(texto))
+      .filter((p) => !texto || normalizar(`${p.sku ?? ''} ${p.nombre} ${p.marca}`).includes(texto))
       .sort((a, b) => a.nombre.localeCompare(b.nombre));
   }, [productos, busqueda, filtro]);
 
