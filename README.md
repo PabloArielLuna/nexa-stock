@@ -21,6 +21,8 @@ Abrí el QR con Expo Go compatible con SDK 57. La web permite revisar el catálo
 - Cámara y galería, lectura QR, háptica y menú nativo para compartir.
 - Nivel para estanterías: acelerómetro para inclinación y giroscopio para detectar movimiento. Referencia relativa y pausa al salir de la pantalla.
 - Presupuesto con cliente, cantidades, descuento, validez y observaciones; PDF con membrete, logo opcional y pie del negocio.
+- Guardado del PDF en una carpeta elegida, menú para compartir por WhatsApp y otras apps, y correo con el PDF adjunto para revisar antes de enviar.
+- Seguimiento de propuestas desde Presupuestos guardados mediante el calendario nativo (requiere compilación propia; Expo Go muestra la limitación).
 
 ## Recargo por SKU
 

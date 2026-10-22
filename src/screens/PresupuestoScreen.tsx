@@ -185,12 +185,31 @@ export default function PresupuestoScreen({
           </Text>
         )}
         <BotonPrimario
-          label="Generar y compartir PDF"
+          label="Compartir PDF · WhatsApp y otras apps"
           icono="document-text-outline"
           cargando={vm.ocupado}
           deshabilitado={!vm.puedeGuardar}
           onPress={() => void vm.guardar(true)}
         />
+        <BotonPrimario
+          label="Guardar PDF en el teléfono"
+          icono="download-outline"
+          variante="secundario"
+          deshabilitado={!vm.puedeGuardar || vm.ocupado}
+          onPress={() => void vm.guardar(true, 'guardar')}
+        />
+        <BotonPrimario
+          label="Preparar correo con PDF adjunto"
+          icono="mail-outline"
+          variante="secundario"
+          deshabilitado={!vm.puedeGuardar || vm.ocupado}
+          onPress={() => void vm.guardar(true, 'correo')}
+        />
+        {!!vm.resultado && (
+          <Text accessibilityRole="alert" style={s.body}>
+            {vm.resultado}
+          </Text>
+        )}
         <BotonPrimario
           label="Guardar borrador"
           variante="secundario"
@@ -203,8 +222,9 @@ export default function PresupuestoScreen({
           }}
         />
         <Text style={s.caption}>
-          Al compartir, el PDF queda fuera de la protección de NEXA. Elegí el destino desde el menú del
-          teléfono. El cliente ve los precios finales, nunca tus costos ni recargos internos.
+          Al guardar o compartir, el PDF queda fuera de la protección de NEXA. El cliente ve los precios
+          finales, nunca tus costos ni recargos internos. WhatsApp aparece si está instalado y habilitado para
+          recibir archivos. Revisá el destinatario antes de enviar.
         </Text>
         <BotonPrimario
           label="Empezar otro presupuesto"

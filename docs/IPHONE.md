@@ -1,5 +1,9 @@
 # iPhone, Expo Go y Face ID
 
+## Calendario y presupuestos
+
+El seguimiento desde Presupuestos guardados usa `expo-calendar` y requiere una compilación propia nueva. Expo Go muestra la limitación y conserva el resto de la app operativo. Guardar el PDF y compartirlo por WhatsApp/correo usan los menús del teléfono; preparar un correo adjunto requiere una cuenta de Mail configurada en iPhone. Consultar el flujo, privacidad y pruebas pendientes en [CALENDARIO-Y-PDF.md](CALENDARIO-Y-PDF.md).
+
 ## Entrega obligatoria
 
 En Windows, abrí PowerShell en la carpeta del proyecto. Instalá Expo Go desde App Store en el iPhone y creá o usá una cuenta gratuita de Expo. Iniciá sesión con esa misma cuenta en Expo Go y ejecutá `npx expo login` en la PC. Luego ejecutá `npx expo start --go --port 8083`, manteniendo ambos equipos en la misma Wi-Fi. Escaneá el QR desde la cámara del iPhone y aceptá abrir Expo Go y el acceso a la red local si iOS lo solicita. Mantené la PC encendida y el servidor abierto durante la prueba. Ante problemas de red, detené con Ctrl+C y probá `npx expo start --go --tunnel --port 8083`.

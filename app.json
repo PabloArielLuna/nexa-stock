@@ -24,6 +24,15 @@
     },
     "plugins": [
       [
+        "expo-calendar",
+        {
+          "writeOnlyAccess": true,
+          "writeOnlyCalendarPermission": "NEXA agrega seguimientos de presupuestos al calendario solo cuando lo elegís, sin leer tus eventos.",
+          "calendarPermission": "NEXA usa el calendario para agendar seguimientos de presupuestos cuando lo elegís.",
+          "remindersPermission": false
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "NEXA usa tus fotos para agregar imágenes a los productos.",

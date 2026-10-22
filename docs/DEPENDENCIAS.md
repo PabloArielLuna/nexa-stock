@@ -1,5 +1,7 @@
 # Dependencias: revisión del 22 de octubre de 2026
 
+Se agregaron `expo-calendar ~57.0.6` y `expo-mail-composer ~57.0.2`, alineados con el catálogo de Expo SDK 57 para seguimientos y adjuntos por correo. No se incorporó `react-native-calendar-events`, cuyo repositorio está discontinuado. Las instalaciones mantuvieron los 15 avisos ya documentados; estos módulos no resolvieron los pendientes de las herramientas.
+
 ## Resultado
 
 La auditoría inicial informó 19 avisos: 16 altos y 3 moderados. Después de aplicar actualizaciones compatibles y alinear expo-sharing con el SDK, quedan 15 altos, 0 moderados y 0 críticos. Los 15 avisos restantes son propagaciones de dos paquetes transitivos de las herramientas; no son 15 fallos independientes en el código de NEXA.

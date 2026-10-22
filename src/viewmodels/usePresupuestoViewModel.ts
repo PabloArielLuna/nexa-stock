@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { usePerfil } from '../context/PerfilContext';
 import { useInventario } from '../context/InventarioContext';
 
-import { compartirPresupuesto } from '../services/presupuestos';
+import { exportarPresupuesto, AccionPDF } from '../services/presupuestos';
 import { Presupuesto, presupuestoValido, totalesPresupuesto } from '../utils/presupuestos';
 import { generarId } from '../utils/formato';
 import { Producto } from '../types/models';
@@ -31,6 +31,7 @@ export function usePresupuestoViewModel(numero?: string) {
 
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState('');
+  const [resultado, setResultado] = useState('');
 
   const enviando = useRef(false);
   function agregar(p: Producto) {
@@ -58,14 +59,16 @@ export function usePresupuestoViewModel(numero?: string) {
       };
     });
   }
-  async function guardar(exportar: boolean) {
+  async function guardar(exportar: boolean, accion: AccionPDF = 'compartir') {
     if (!activo || invitado || enviando.current || errorCarga || !presupuestoValido(form)) return false;
     enviando.current = true;
     setOcupado(true);
     setError('');
+    setResultado('');
     try {
       await guardarPresupuesto(form, exportar);
-      if (exportar) await compartirPresupuesto(form, activo.id, activo.nombre, negocio.marca);
+      if (exportar)
+        setResultado(await exportarPresupuesto(form, activo.id, activo.nombre, negocio.marca, accion));
       return true;
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No pudimos preparar el presupuesto.');
@@ -83,6 +86,7 @@ export function usePresupuestoViewModel(numero?: string) {
     cargando,
     ocupado,
     error,
+    resultado,
     agregar,
     guardar,
     totales: totalesPresupuesto(form),
@@ -90,6 +94,10 @@ export function usePresupuestoViewModel(numero?: string) {
     disponibles: productos
       .filter((p) => `${p.sku ?? ''} ${p.marca} ${p.nombre}`.toLowerCase().includes(busqueda.toLowerCase()))
       .slice(0, 20),
-    nuevo: () => setForm(nuevo()),
+    nuevo: () => {
+      setForm(nuevo());
+      setError('');
+      setResultado('');
+    },
   };
 }

@@ -23,3 +23,9 @@ Un PDF que el usuario exporta es un documento legible fuera de NEXA. Solo contie
 La web solo ofrece una vista de ejemplo; no simula protección nativa. Las pruebas automatizadas verifican el formato de cifrado y las reglas con adaptadores de prueba, pero no certifican la implementación del hardware, Keychain/Keystore o los permisos. Falta la comprobación física en iPhone y Android.
 
 El árbol de dependencias de Expo contiene avisos de seguridad de paquetes transitivos. No se aplicó una actualización forzada que rebajaría Expo y rompería compatibilidad; revisar los avisos y actualizar el SDK antes de una publicación comercial. Esta entrega académica no representa una auditoría de seguridad de producción.
+
+## Calendario y archivos exportados
+
+El seguimiento de presupuestos copia solo la referencia al calendario externo. No copia cliente ni importes. En iOS se solicita permiso de escritura; en Android la selección requiere permisos de calendario. NEXA no consulta eventos. El usuario confirma fecha y calendario en la interfaz nativa.
+
+Los PDFs generados son archivos legibles fuera del cifrado de NEXA, al igual que los adjuntos y las copias guardadas en Archivos/Descargas. Para permitir el consumo asíncrono del adjunto por otras apps, las exportaciones compartidas y algunos borradores conservan un temporal en la caché de NEXA. Al volver a exportar se limpian temporales de más de 24 horas; no hay garantía de eliminación automática a esa hora exacta. Los destinatarios y el envío los confirma el usuario. Ver [CALENDARIO-Y-PDF.md](CALENDARIO-Y-PDF.md).

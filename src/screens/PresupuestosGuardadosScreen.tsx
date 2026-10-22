@@ -10,10 +10,13 @@ import { formatoFecha, formatoPrecio } from '../utils/formato';
 import { totalesPresupuesto } from '../utils/presupuestos';
 import { globalStyles } from '../styles/global';
 import { colors } from '../styles/colors';
+import SeguimientoModal from '../components/SeguimientoModal';
+import { useSeguimientoViewModel } from '../viewmodels/useSeguimientoViewModel';
 export default function PresupuestosGuardadosScreen({
   navigation,
 }: NativeStackScreenProps<VentasStackParamList, 'PresupuestosGuardados'>) {
   const { negocio } = useInventario();
+  const seguimiento = useSeguimientoViewModel();
   const [busqueda, setBusqueda] = useState('');
   const datos = negocio.presupuestos.filter((p) =>
     `${p.numero} ${p.cliente} ${p.lineas.map((l) => l.sku ?? '').join(' ')}`
@@ -53,9 +56,16 @@ export default function PresupuestosGuardadosScreen({
               variante="secundario"
               onPress={() => navigation.push('Presupuesto', { numero: item.numero })}
             />
+            <BotonPrimario
+              label="Agendar seguimiento"
+              variante="secundario"
+              icono="calendar-outline"
+              onPress={() => seguimiento.abrir(item.numero)}
+            />
           </View>
         )}
       />
+      <SeguimientoModal vm={seguimiento} />
     </View>
   );
 }
