@@ -16,6 +16,10 @@ iOS informa si se guardó o canceló. Android solo informa que cerró el formula
 
 ## PDF
 
+El membrete y el pie se imprimen dentro del flujo del documento, con márgenes nativos de 36 puntos en iOS y su equivalente en la regla CSS de impresión. No se usan coordenadas negativas para colocar el logo fuera del área imprimible. La propuesta presenta logo arriba, datos de cliente/emisor en dos columnas, tabla de productos y resumen final. La cabecera de la tabla se repite al paginar; el membrete aparece al principio y el pie comercial al final. Si un logo configurado no puede abrirse, se informa y no se exporta silenciosamente sin él.
+
+La revisión visual local incluyó una propuesta de una página y otra de 30 productos, nombres largos, importes máximos y observaciones extensas: márgenes, logo y texto dentro del área imprimible en el motor de escritorio. La confirmación del PDF regenerado por WKWebView en el iPhone sigue pendiente de la prueba del usuario.
+
 En el formulario del presupuesto hay tres acciones. Antes de exportar, NEXA valida y archiva la propuesta cifrada para que pueda retomarse aunque el usuario cancele el destino.
 
 - **Compartir PDF · WhatsApp y otras apps:** adjunta el archivo PDF real con nombre reconocible y MIME `application/pdf`. El sistema muestra destinos instalados y compatibles; el usuario elige WhatsApp, el contacto y confirma. No se envía automáticamente ni se afirma que fue enviado.

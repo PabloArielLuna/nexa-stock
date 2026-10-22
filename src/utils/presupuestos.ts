@@ -71,6 +71,51 @@ export function htmlPresupuesto(p: Presupuesto, marca: MarcaNegocio, logo: strin
       ? `<img alt="Logo" src="${logo}"/>`
       : `<span class="monograma">${e((marca.nombre || 'N').slice(0, 1).toUpperCase())}</span>`;
   return `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'"><title>Presupuesto ${e(p.numero)}</title><style>
-  @page{size:A4;margin:28mm 15mm 23mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#18243a;font-size:11px;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}header{position:fixed;top:-75px;left:0;right:0;height:64px;border-bottom:3px solid #2457ff;display:flex;align-items:center;gap:14px}header img{width:52px;height:52px;object-fit:contain}.monograma{background:#2457ff;color:white;width:45px;height:45px;line-height:45px;text-align:center;font-size:26px;font-weight:bold;border-radius:10px}.marca{font-size:19px;font-weight:bold}.contacto{color:#59677f;font-size:10px;margin-top:5px}footer{position:fixed;bottom:-52px;left:0;right:0;border-top:1px solid #cbd4e5;padding-top:10px;color:#67748a;font-size:9px;display:flex;justify-content:space-between;gap:20px}footer span{max-width:70%;white-space:pre-wrap}h1{font-size:30px;letter-spacing:-1px;margin:16px 0 8px}p{line-height:1.6;overflow-wrap:anywhere}.etiqueta{color:#2457ff;font-size:10px;font-weight:bold;letter-spacing:2px}.datos{display:flex;justify-content:space-between;padding:20px 0;margin:16px 0;border-top:1px solid #dce3ef;border-bottom:1px solid #dce3ef}.gris{color:#67748a;font-size:10px}.cliente{font-size:16px;margin-top:7px;max-width:320px;overflow-wrap:anywhere}table{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:20px}thead{display:table-header-group}th{background:#edf2ff;color:#254285;font-size:9px;text-transform:uppercase;padding:12px 8px;text-align:left}td{padding:14px 8px;border-bottom:1px solid #e3e8f1;overflow-wrap:anywhere}tr{break-inside:avoid;page-break-inside:avoid}.num{text-align:right;font-variant-numeric:tabular-nums}.resumen{width:280px;margin:28px 0 0 auto;break-inside:avoid;page-break-inside:avoid}.fila{display:flex;justify-content:space-between;margin:12px 0}.total{background:#173fcd;color:white;padding:18px;border-radius:10px;font-size:18px;font-weight:bold}.notas{margin-top:30px;white-space:pre-wrap;break-inside:avoid;page-break-inside:avoid}.legal{color:#67748a;font-size:9px;margin-top:22px}
-  </style></head><body><header>${imagen}<div><div class="marca">${e(marca.nombre || 'Mi negocio')}</div><div class="contacto">${e(marca.contacto)}${marca.direccion ? ' · ' + e(marca.direccion) : ''}</div></div></header><footer><span>${e(marca.pie)}</span><div>${e(p.numero)}</div></footer><main><div class="etiqueta">PROPUESTA COMERCIAL</div><h1>Presupuesto</h1><p class="gris">N.º ${e(p.numero)} · Emitido el ${formatoFecha(fecha)}</p><div class="datos"><div><div class="gris">PREPARADO PARA</div><div class="cliente">${e(p.cliente)}</div></div><div><div class="gris">VÁLIDO HASTA</div><p>${formatoFecha(vence)} · ${p.validez} días</p></div></div><table><colgroup><col style="width:43%"><col style="width:12%"><col style="width:22%"><col style="width:23%"></colgroup><thead><tr><th>Descripción</th><th class="num">Cant.</th><th class="num">Precio unitario</th><th class="num">Importe</th></tr></thead><tbody>${p.lineas.map((l) => `<tr><td>${e(l.nombre)}${l.sku ? `<div class="gris">SKU: ${e(l.sku)}</div>` : ''}</td><td class="num">${l.cantidad}</td><td class="num">${formatoPrecio(l.precio)}</td><td class="num">${formatoPrecio(l.cantidad * l.precio)}</td></tr>`).join('')}</tbody></table><div class="resumen"><div class="fila"><span>Subtotal</span><b>${formatoPrecio(t.subtotal)}</b></div>${p.descuento ? `<div class="fila"><span>Descuento (${p.descuento}%)</span><b>− ${formatoPrecio(t.descuento)}</b></div>` : ''}<div class="fila total"><span>Total ARS</span><span>${formatoPrecio(t.total)}</span></div></div>${p.notas ? `<div class="notas"><b>Observaciones</b><p>${e(p.notas)}</p></div>` : ''}<p class="legal">Importes expresados en pesos argentinos. Este presupuesto no reserva unidades ni constituye una factura.</p></main></body></html>`;
+  @page{size:A4;margin:36pt}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#18243a;font-size:12px;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  p{margin:0;overflow-wrap:anywhere;word-break:break-word}
+  header{padding:4px 0 24px;break-inside:avoid;page-break-inside:avoid}
+  .identidad{display:table;width:100%;table-layout:fixed}
+  .logo{display:table-cell;width:112px;vertical-align:middle;padding-right:18px}
+  .logo img{display:block;width:94px;height:94px;object-fit:contain}
+  .monograma{display:block;background:#2457ff;color:white;width:64px;height:64px;line-height:64px;text-align:center;font-size:32px;font-weight:bold;border-radius:14px}
+  .marca-datos{display:table-cell;vertical-align:middle;text-align:right;overflow-wrap:anywhere;word-break:break-word}
+  .marca{font-size:25px;line-height:1.2;font-weight:bold;margin-bottom:8px}
+  .etiqueta{color:#2457ff;font-size:9px;font-weight:bold;letter-spacing:2px}
+  .referencia{font-size:10px;color:#67748a;overflow-wrap:anywhere;word-break:break-word}
+  .datos{display:table;table-layout:fixed;width:100%;margin:8px 0 28px;break-inside:avoid;page-break-inside:avoid}
+  .datos>div{display:table-cell;width:50%;vertical-align:top;overflow-wrap:anywhere;word-break:break-word}
+  .datos>div:first-child{padding-right:18px}.datos>div:last-child{padding-left:18px}
+  .bloque-titulo{font-size:15px;font-weight:bold;border-top:3px solid #18243a;border-bottom:1px solid #18243a;padding:10px 0 8px;margin-bottom:10px;letter-spacing:.6px}
+  .campo{font-size:11px;line-height:1.6;margin-top:5px;white-space:pre-wrap}
+  .gris{color:#67748a;font-size:10px}
+  .cliente{font-size:16px;font-weight:bold;margin-top:5px;line-height:1.4}
+  table.productos{width:100%;border-collapse:collapse;table-layout:fixed;border-top:3px solid #18243a}
+  thead{display:table-header-group}
+  th{background:#f4f7fc;color:#18243a;font-size:10px;padding:12px 8px;text-align:left;line-height:1.4;border-bottom:1px solid #aab7ca}
+  td{padding:14px 8px;border-bottom:1px solid #e3e8f1;vertical-align:top;overflow-wrap:anywhere;word-break:break-word}
+  tr{break-inside:avoid;page-break-inside:avoid}
+  .descripcion{font-size:12px;line-height:1.5}.sku{margin-top:5px;font-size:10px;color:#67748a}
+  .num{text-align:right;font-variant-numeric:tabular-nums;font-size:11px;white-space:nowrap}
+  .resumen{width:330px;max-width:100%;margin:24px 0 0 auto;break-inside:avoid;page-break-inside:avoid}
+  .fila{display:table;table-layout:fixed;width:100%;margin:10px 0}
+  .fila>span,.fila>b{display:table-cell;vertical-align:middle}
+  .fila>span:first-child{width:35%}.fila>b,.fila>span:last-child{text-align:right}
+  .total{background:#f4f7fc;color:#173fcd;border-top:1px solid #18243a;border-bottom:3px solid #2457ff;padding:14px 10px;font-size:18px;font-weight:bold}
+  .total>span:first-child{font-size:13px}.total>span:last-child{white-space:nowrap}
+  .notas{border-top:1px solid #dce3ef;margin-top:28px;padding-top:18px;break-inside:avoid;page-break-inside:avoid}
+  .notas p{white-space:pre-wrap;margin-top:8px;color:#59677f}
+  .legal{color:#67748a;font-size:9px;margin-top:22px;line-height:1.6}
+  footer{margin-top:30px;border-top:2px solid #2457ff;padding-top:14px;break-inside:avoid;page-break-inside:avoid;overflow-wrap:anywhere;word-break:break-word}
+  .pie{white-space:pre-wrap;font-size:11px;color:#59677f;margin-bottom:10px}
+  .cierre{color:#67748a;font-size:9px}
+  </style></head><body>
+  <header><div class="identidad"><div class="logo">${imagen}</div><div class="marca-datos"><div class="etiqueta">PROPUESTA COMERCIAL</div><div class="marca">Presupuesto</div><p class="referencia">N.º ${e(p.numero)}</p><p class="gris">Importes en ARS</p></div></div></header>
+  <main><div class="datos"><div><div class="bloque-titulo">CLIENTE</div><div class="cliente">${e(p.cliente)}</div><p class="campo"><b>Emisión:</b> ${formatoFecha(fecha)}</p><p class="campo"><b>Vencimiento:</b> ${formatoFecha(vence)}</p><p class="gris">Validez de la propuesta: ${p.validez} días</p></div><div><div class="bloque-titulo">EMISOR</div><div class="cliente">${e(marca.nombre || 'Mi negocio')}</div>${marca.contacto ? `<p class="campo"><b>Contacto:</b> ${e(marca.contacto)}</p>` : ''}${marca.direccion ? `<p class="campo"><b>Dirección:</b> ${e(marca.direccion)}</p>` : ''}</div></div>
+  <table class="productos"><colgroup><col style="width:47%"><col style="width:9%"><col style="width:22%"><col style="width:22%"></colgroup><thead><tr><th>Descripción / SKU</th><th class="num">Cant.</th><th class="num">Precio unitario</th><th class="num">Importe</th></tr></thead><tbody>${p.lineas.map((l) => `<tr><td class="descripcion">${e(l.nombre)}${l.sku ? `<div class="sku">SKU: ${e(l.sku)}</div>` : ''}</td><td class="num">${l.cantidad}</td><td class="num">${formatoPrecio(l.precio)}</td><td class="num">${formatoPrecio(l.cantidad * l.precio)}</td></tr>`).join('')}</tbody></table>
+  <div class="resumen"><div class="fila"><span>Subtotal</span><b>${formatoPrecio(t.subtotal)}</b></div>${p.descuento ? `<div class="fila"><span>Descuento (${p.descuento}%)</span><b>- ${formatoPrecio(t.descuento)}</b></div>` : ''}<div class="fila total"><span>Total ARS</span><span>${formatoPrecio(t.total)}</span></div></div>
+  ${p.notas ? `<div class="notas"><b>Observaciones y condiciones</b><p>${e(p.notas)}</p></div>` : ''}<p class="legal">Importes expresados en pesos argentinos. Este presupuesto no reserva unidades ni constituye una factura.</p></main>
+  <footer>${marca.pie ? `<div class="pie">${e(marca.pie)}</div>` : ''}<div class="cierre">${e(marca.nombre || 'Mi negocio')} · Presupuesto ${e(p.numero)}</div></footer>
+  </body></html>`;
 }

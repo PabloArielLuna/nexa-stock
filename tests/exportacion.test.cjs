@@ -19,6 +19,8 @@ let falloEscritura = false;
 let compartido;
 let correo;
 let html;
+let opcionesImpresion;
+let logoProtegido = null;
 let contador = 0;
 let estadoCorreo = 'cancelled';
 class File {
@@ -71,11 +73,13 @@ const original = Module._load;
 Module._load = function (id, parent, main) {
   if (id === 'react-native') return { Platform: platform };
   if (id === 'expo-file-system') return { File, Directory, Paths: { cache: { uri: 'file:///cache/' } } };
-  if (id === './fotos' && parent.filename.endsWith('presupuestos.ts')) return { abrirFoto: async () => null };
+  if (id === './fotos' && parent.filename.endsWith('presupuestos.ts'))
+    return { abrirFoto: async () => logoProtegido };
   if (id === 'expo-print')
     return {
       printToFileAsync: async (opciones) => {
         html = opciones.html;
+        opcionesImpresion = opciones;
         const uri = `file:///cache/print-${++contador}.pdf`;
         archivos.set(uri, Buffer.from('%PDF-prueba'));
         return { uri };
@@ -122,6 +126,37 @@ test('PDF: copia persistente en carpeta elegida y limpieza del temporal', async 
   assert.deepEqual(archivos.get(guardado), Buffer.from('%PDF-prueba'));
   assert(![...archivos.keys()].some((k) => k.includes('/cache/')));
   assert(html.includes('P-TEST'));
+  assert.deepEqual(opcionesImpresion.margins, { top: 36, right: 36, bottom: 36, left: 36 });
+  assert.equal(opcionesImpresion.width, 595);
+  assert.equal(opcionesImpresion.height, 842);
+});
+test('PDF: incorpora marca y logo guardados y no exporta silenciosamente un logo inaccesible', async () => {
+  const configurada = {
+    ...marca,
+    logo: 'nexa-foto:perfil-prueba:imagen',
+    contacto: 'Contacto de prueba',
+    direccion: 'Dirección de prueba',
+    pie: 'Pie de marca',
+  };
+  const antes = contador;
+  await assert.rejects(
+    exportarPresupuesto(p, 'perfil-prueba', 'Nombre', configurada, 'guardar'),
+    /logo guardado/,
+  );
+  assert.equal(contador, antes);
+  logoProtegido = 'data:image/jpeg;base64,aW1hZ2Vu';
+  await exportarPresupuesto(p, 'perfil-prueba', 'Nombre', configurada, 'guardar');
+  assert(html.includes(logoProtegido));
+  for (const texto of [
+    'Mi negocio',
+    'Contacto de prueba',
+    'Dirección de prueba',
+    'Pie de marca',
+    'CLIENTE',
+    'EMISOR',
+  ])
+    assert(html.includes(texto));
+  logoProtegido = null;
 });
 test('PDF: cancelar carpeta no genera archivo ni afirma guardado', async () => {
   cancelar = true;

@@ -62,12 +62,23 @@ export async function exportarPresupuesto(
     }
   }
   const logo = marca.logo ? await abrirFoto(marca.logo, perfilId) : null;
+  if (marca.logo && !logo)
+    throw new Error(
+      'No pudimos abrir el logo guardado de este perfil. El presupuesto no se exportó sin tu marca. Revisá el membrete antes de reintentar.',
+    );
   const html = htmlPresupuesto(p, { ...marca, nombre: marca.nombre || nombre }, logo);
   let temporal: string | null = null;
   let exportado: File | null = null;
   let conservar = false;
   try {
-    const pdf = await Print.printToFileAsync({ html, width: 595, height: 842 });
+    // WKWebView en iOS no aplica @page de la misma forma que Chromium/Android.
+    // El margen nativo asegura el área imprimible; el membrete está en el flujo normal.
+    const pdf = await Print.printToFileAsync({
+      html,
+      width: 595,
+      height: 842,
+      margins: { top: 36, right: 36, bottom: 36, left: 36 },
+    });
     temporal = pdf.uri;
     const nombreArchivo = `NEXA-${Date.now()}-${Math.random().toString(36).slice(2, 8)}-Presupuesto-${p.numero}.pdf`;
     exportado = new File(carpetaExportacion(), nombreArchivo);
