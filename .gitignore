@@ -48,3 +48,8 @@ service-account*.json
 # generated native folders
 /ios
 /android
+
+# Personal preparation material is kept outside this repository
+/docs/DEFENSA.md
+/material-personal/
+Guia-de-defensa-NEXA.*

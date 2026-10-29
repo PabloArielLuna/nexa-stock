@@ -2,9 +2,11 @@
 
 Se agregaron `expo-calendar ~57.0.6` y `expo-mail-composer ~57.0.2`, alineados con el catálogo de Expo SDK 57 para seguimientos y adjuntos por correo. No se incorporó `react-native-calendar-events`, cuyo repositorio está discontinuado. Las instalaciones mantuvieron los 15 avisos ya documentados; estos módulos no resolvieron los pendientes de las herramientas.
 
-## Resultado
+Este informe conserva los resultados de la consulta del **22/10/2026**. La revisión documental del 29/10 no vuelve a ejecutar npm audit ni verifica si se publicaron correcciones después de aquella fecha. La recuperación del 27/10 conservó el archivo de versiones y volvió a exportar y comprobar mapas de fuentes.
 
-La auditoría inicial informó 19 avisos: 16 altos y 3 moderados. Después de aplicar actualizaciones compatibles y alinear expo-sharing con el SDK, quedan 15 altos, 0 moderados y 0 críticos. Los 15 avisos restantes son propagaciones de dos paquetes transitivos de las herramientas; no son 15 fallos independientes en el código de NEXA.
+## Resultado del 22/10/2026
+
+La auditoría inicial informó 19 avisos: 16 altos y 3 moderados. Después de aplicar actualizaciones compatibles y alinear expo-sharing con el SDK, quedaron 15 altos, 0 moderados y 0 críticos en aquella ejecución. Los 15 avisos restantes son propagaciones de dos paquetes transitivos de las herramientas; no son 15 fallos independientes en el código de NEXA.
 
 Se mantuvieron Expo SDK 57 y React Native 0.86.3. Se actualizó Expo 57.0.25 → 57.0.31, la CLI y paquetes de soporte compatibles; expo-sharing 57.0.23 → 57.0.24; config-plugins 57.0.10 → 57.0.11 incorpora xcode 4.0.0, retirando uuid 7 del árbol. `expo install --check` confirma compatibilidad de versiones.
 
@@ -15,8 +17,8 @@ No se aplicó `npm audit fix --force`: su propuesta rebajaba Expo a 44 y React N
 | Paquete          | Aviso                                                                    | Alcance observado                                                              | Resolución                                                                                                                                                  |
 | ---------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | uuid 7.0.3       | [GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq) | Dependencia de xcode, usado por config-plugins para preparar proyectos nativos | Retirado mediante actualización compatible de config-plugins/xcode; la app no lo usaba para generar IDs                                                     |
-| braces 3.0.3     | [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) | Micromatch/Metro: patrones de archivos en las herramientas de desarrollo       | La versión publicada más reciente consultada sigue afectada. Pendiente una corrección upstream; no se agregó un parche improvisado al parser                |
-| node-forge 1.4.0 | [GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv) | Expo CLI/code-signing-certificates, manejo de certificados en las herramientas | La versión publicada más reciente consultada sigue afectada. Pendiente una corrección upstream; el cifrado de datos de NEXA usa expo-crypto y no node-forge |
+| braces 3.0.3     | [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) | Micromatch/Metro: patrones de archivos en las herramientas de desarrollo       | La versión más reciente consultada el 22/10 seguía afectada. Pendiente una corrección upstream; no se agregó un parche improvisado al parser                |
+| node-forge 1.4.0 | [GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv) | Expo CLI/code-signing-certificates, manejo de certificados en las herramientas | La versión más reciente consultada el 22/10 seguía afectada. Pendiente una corrección upstream; el cifrado de datos de NEXA usa expo-crypto y no node-forge |
 
 ## Comprobación del código distribuido
 
@@ -30,7 +32,7 @@ npx expo install --check
 npm run check
 ```
 
-Esta comprobación clasifica el código JavaScript distribuido; no certifica todos los módulos nativos, las herramientas ni el pipeline. No equivale a eliminar los avisos de npm. Mientras no haya corrección, las herramientas deben trabajar con código, configuración y certificados de confianza y los servidores de desarrollo no deben exponerse públicamente. Antes de una publicación comercial, repetir auditoría, revisar las correcciones disponibles y realizar las pruebas nativas pendientes.
+Esta comprobación clasifica el código JavaScript distribuido; no certifica todos los módulos nativos, las herramientas ni el pipeline. No equivale a eliminar los avisos de npm. Mientras los avisos sigan pendientes, las herramientas deben trabajar con código, configuración y certificados de confianza y los servidores de desarrollo no deben exponerse públicamente. Antes de una publicación comercial, repetir auditoría, revisar las correcciones disponibles y realizar las pruebas nativas pendientes.
 
 ## Compilación en Windows y OneDrive
 

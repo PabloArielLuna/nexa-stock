@@ -1,10 +1,10 @@
-# iPhone, Expo Go y Face ID
+# iPhone, Expo Go y compilación propia
 
 ## Calendario y presupuestos
 
 El seguimiento desde Presupuestos guardados usa `expo-calendar` y requiere una compilación propia nueva. Expo Go muestra la limitación y conserva el resto de la app operativo. Guardar el PDF y compartirlo por WhatsApp/correo usan los menús del teléfono; preparar un correo adjunto requiere una cuenta de Mail configurada en iPhone. Consultar el flujo, privacidad y pruebas pendientes en [CALENDARIO-Y-PDF.md](CALENDARIO-Y-PDF.md).
 
-## Entrega obligatoria
+## Recorrido académico en Expo Go
 
 En Windows, abrí PowerShell en la carpeta del proyecto. Instalá Expo Go desde App Store en el iPhone y creá o usá una cuenta gratuita de Expo. Iniciá sesión con esa misma cuenta en Expo Go y ejecutá `npx expo login` en la PC. Luego ejecutá `npx expo start --go --port 8083`, manteniendo ambos equipos en la misma Wi-Fi. Escaneá el QR desde la cámara del iPhone y aceptá abrir Expo Go y el acceso a la red local si iOS lo solicita. Mantené la PC encendida y el servidor abierto durante la prueba. Ante problemas de red, detené con Ctrl+C y probá `npx expo start --go --tunnel --port 8083`.
 
@@ -25,7 +25,7 @@ npx eas-cli device:create
 npx eas-cli build --platform ios --profile preview
 ```
 
-El proyecto incluye `eas.json` y la explicación de uso de Face ID en `app.json`. No se inició sesión ni se generó una build desde este trabajo. La distribución interna al iPhone usa registro del dispositivo y membresía paga de Apple Developer. El plan gratuito de EAS tiene una cuota limitada de compilaciones; no elimina los requisitos de Apple.
+El proyecto incluye `eas.json` y la explicación de uso de Face ID en `app.json`. La recuperación del código y las exportaciones de JavaScript no generaron una compilación propia instalable. No hay una prueba física de Face ID o calendario registrada con esa compilación. La distribución interna al iPhone usa registro del dispositivo y membresía paga de Apple Developer. El plan gratuito de EAS tiene una cuota limitada de compilaciones; no elimina los requisitos de Apple.
 
 Fuentes: https://docs.expo.dev/build/internal-distribution/ y https://expo.dev/pricing
 
@@ -51,6 +51,7 @@ Ya que tenés iPhone, la prueba física en tu dispositivo es la referencia para 
 - Compartir PDF a Archivos y al destino elegido; comprobar precios finales y ausencia de costo/recargo.
 - Copia: exportar a Archivos, cancelar el menú y comprobar que no afirma haber guardado; seleccionar con contraseña errónea; verificar resumen; restaurar fotos, SKU, QR y ventas a un perfil vacío; reiniciar y comprobar persistencia. Intentar restaurar en un perfil con productos: debe impedirlo. Mantener el origen hasta verificar el destino.
 - Escáner ampliado: EAN/UPC y Code 128/39/Data Matrix en dispositivos compatibles; linterna; cámara y luz apagadas al ir a segundo plano. No se importa automáticamente información de internet.
-- En build propia: biometría aceptada, cancelada, no configurada y regreso a PIN.
+- En compilación propia nueva: biometría aceptada, cancelada, no configurada y regreso a PIN; calendario con permiso concedido/rechazado, elección de fecha/destino, guardado y cancelación.
+- PDF corregido: confirmar logo y datos ya guardados, márgenes y varias páginas en iPhone. Probar Guardar PDF, Compartir PDF y correo adjunto, incluidos cancelación y cuenta no configurada.
 
 Las pruebas en navegador solo comprueban la interfaz de ejemplo; estas verificaciones nativas siguen pendientes hasta usar un teléfono.

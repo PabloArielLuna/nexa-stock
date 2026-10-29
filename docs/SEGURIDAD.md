@@ -22,7 +22,7 @@ Un PDF que el usuario exporta es un documento legible fuera de NEXA. Solo contie
 
 La web solo ofrece una vista de ejemplo; no simula protección nativa. Las pruebas automatizadas verifican el formato de cifrado y las reglas con adaptadores de prueba, pero no certifican la implementación del hardware, Keychain/Keystore o los permisos. Falta la comprobación física en iPhone y Android.
 
-El árbol de dependencias de Expo contiene avisos de seguridad de paquetes transitivos. No se aplicó una actualización forzada que rebajaría Expo y rompería compatibilidad; revisar los avisos y actualizar el SDK antes de una publicación comercial. Esta entrega académica no representa una auditoría de seguridad de producción.
+La auditoría de dependencias del 22/10/2026 registró avisos de paquetes transitivos; no se volvió a ejecutar en esta revisión documental. No se aplicó una actualización forzada que rebajaría Expo y rompería compatibilidad. Antes de una publicación comercial corresponde repetir la auditoría y evaluar actualizaciones compatibles. Ver [DEPENDENCIAS.md](DEPENDENCIAS.md). Esta entrega académica no representa una auditoría de seguridad de producción.
 
 ## Calendario y archivos exportados
 

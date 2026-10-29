@@ -1,4 +1,6 @@
-# Verificación de recuperación completa
+# Copia y recuperación de los datos del negocio
+
+Este documento trata de exportar e importar archivos cifrados **.nexa** desde la app. Es independiente de recuperar código fuente mediante GitHub. Última ejecución automatizada registrada: 27 de octubre de 2026; la prueba física completa entre instalaciones sigue pendiente.
 
 ## Comprobación automatizada ejecutada
 

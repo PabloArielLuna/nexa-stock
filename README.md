@@ -6,10 +6,14 @@ Aplicación móvil React Native, Expo SDK 57 y TypeScript. Diseño oscuro con az
 
 ```sh
 npm ci
-npm start
+npx expo start --go --clear
 ```
 
-Abrí el QR con Expo Go compatible con SDK 57. La web permite revisar el catálogo y dashboard de ejemplo; el registro y la persistencia protegida requieren el teléfono. Face ID en iOS requiere una compilación propia adicional; el recorrido completo de la entrega funciona con PIN en Expo Go.
+Abrí el QR con Expo Go compatible con SDK 57. La web permite revisar el catálogo y dashboard de ejemplo; el registro y la persistencia protegida requieren el teléfono. El recorrido de inventario, ventas, presupuestos y perfiles usa PIN en Expo Go. Face ID en iOS y el calendario son funciones adicionales que requieren una compilación propia; Expo Go muestra su limitación.
+
+## Documentación
+
+El [índice de documentación](docs/README.md) explica qué contiene cada archivo y registra el estado de verificación: arquitectura, seguridad, flujos nativos y comprobaciones pendientes.
 
 ## Acceso y funciones
 
@@ -82,11 +86,11 @@ Las propuestas se archivan al generar el PDF y se recuperan desde **Ventas → P
 ## Comprobaciones automatizadas
 
 ```sh
-npm run typecheck
-npm test
-npx expo export --platform all
+npm run check
+npx expo export --platform all --source-maps
+npm run verify:bundle
 ```
 
-Las pruebas cubren reglas de stock, recargos, PDF sin datos internos, aislamiento, cifrado, migración, intentos de PIN y cálculos del nivel. Los adaptadores nativos se simulan en las pruebas automatizadas: cámara, sensores, PDF y biometría requieren además validación en un teléfono físico.
+Última ejecución registrada: 27 de octubre de 2026, sobre la versión recuperada de GitHub. Pasaron 62 pruebas, la exportación de iOS/Android/web y la revisión de mapas de fuentes. Las pruebas cubren stock, dinero, aislamiento, cifrado, recuperación, permisos y resultados de calendario, guardado/adjuntos PDF y cálculos del nivel. Los adaptadores nativos se simulan: estas verificaciones no sustituyen las pruebas físicas ni confirman entrega de mensajes. El PDF corregido tiene revisión visual de escritorio; queda pendiente confirmar su resultado en iPhone.
 
-[Guía de defensa](docs/DEFENSA.md) · [Pruebas en iPhone y Face ID](docs/IPHONE.md)
+[Índice de documentación](docs/README.md) · [Pruebas en iPhone](docs/IPHONE.md) · [Calendario y PDF](docs/CALENDARIO-Y-PDF.md)

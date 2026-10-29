@@ -32,6 +32,8 @@ El archivo temporal se elimina al terminar el guardado local o al cerrar el corr
 
 ## Verificación
 
+Los casos de calendario y exportaciones forman parte de las **62 pruebas** ejecutadas el 27/10/2026. La revisión de documentación del 29/10 no representa una nueva prueba física ni un envío real.
+
 Pruebas automatizadas con adaptadores nativos simulados: payload privado, fecha local y cambio de año, permisos y revocación, calendario no editable, cancelación y resultado no confirmado de Android, Expo Go/web sin módulo, copia PDF byte a byte, cancelación sin generar archivo, fallo de escritura y limpieza de copia parcial, adjuntos y correo no configurado. Estas pruebas no reemplazan la comprobación física.
 
 Pendiente en iPhone y Android:

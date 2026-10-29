@@ -3,17 +3,21 @@
 ## Responsabilidades
 
 - `screens/`: presentación, accesibilidad, navegación y confirmaciones.
-- `viewmodels/`: estado y acciones de cada flujo. Marca, presupuesto y respaldo tienen hooks separados.
+- `viewmodels/`: estado y acciones de cada flujo. Marca, presupuesto, respaldo y seguimiento de propuestas tienen hooks separados.
 - `context/`: sesión y coordinación del inventario activo. Las modificaciones se rechazan mientras carga, falla la lectura o se restaura una copia.
 - `domain/inventario/`: validación de datos desconocidos y formato versionado de copias. Sin React, archivos ni almacenamiento nativo.
-- `utils/`: cálculos y reglas puras compartidas de ventas, SKU y códigos.
+- `domain/seguimiento`: prepara la referencia y valores iniciales del evento sin copiar cliente ni precios.
+- `utils/`: cálculos y reglas puras de ventas, SKU y códigos; validación y HTML autocontenido del presupuesto.
 - `services/almacenamiento`: lectura/migración y cola de escritura. Reexporta el validador para conservar imports anteriores.
 - `services/boveda`: cifrado del dispositivo y acceso a SecureStore. No sustituye una clave perdida si existe algún registro cifrado, incluso si se intenta crear un ámbito nuevo.
 - `services/respaldoDatos`: captura de inventario y traslado de fotos a un perfil nuevo.
 - `services/respaldoCripto`: formato cifrado portátil y derivación de contraseña.
 - `services/respaldo`: selector de archivos y menú nativo para compartir. No decide sobre inventarios ni permisos de usuario.
 
-La organización crece por responsabilidades concretas. No se movieron todos los archivos por motivos cosméticos ni se cambió MVVM por un framework nuevo.
+- `services/calendario.native`: permisos, destino y formulario con expo-calendar. Carga el módulo después de comprobar disponibilidad. `services/calendario.ts` ofrece la alternativa web sin API nativa.
+- `services/presupuestos`: impresión del PDF, copia a carpeta elegida, compartir y editor de correo. No calcula stock ni envía automáticamente. Maneja cancelación, confirmaciones limitadas del sistema y temporales.
+
+La organización separa presentación, coordinación, reglas de negocio y adaptadores del dispositivo. Cada ampliación conserva esa división de responsabilidades.
 
 ## Reglas de mantenimiento
 
