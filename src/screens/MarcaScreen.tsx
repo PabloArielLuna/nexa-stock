@@ -4,6 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { VentasStackParamList } from '../types/navigation';
 import { useMarcaViewModel } from '../viewmodels/useMarcaViewModel';
 import CampoTexto from '../components/CampoTexto';
+import Ayuda from '../components/Ayuda';
 import BotonPrimario from '../components/BotonPrimario';
 import FotoProducto from '../components/FotoProducto';
 import PantallaCarga from '../components/PantallaCarga';
@@ -19,10 +20,6 @@ export default function MarcaScreen({ navigation }: NativeStackScreenProps<Venta
       keyboardVerticalOffset={90}
     >
       <ScrollView contentContainerStyle={globalStyles.scrollContent} keyboardShouldPersistTaps="handled">
-        <Text style={s.title}>Tu marca, en cada propuesta.</Text>
-        <Text style={s.body}>
-          Estos datos aparecen en el encabezado y pie de tus presupuestos. Se guardan protegidos en tu perfil.
-        </Text>
         <View style={[globalStyles.card, s.fields]}>
           <CampoTexto
             label="Nombre del negocio *"
@@ -68,6 +65,10 @@ export default function MarcaScreen({ navigation }: NativeStackScreenProps<Venta
             />
           )}
         </View>
+        <Ayuda
+          titulo="Marca del presupuesto"
+          mensaje="Estos datos y el logo aparecen en el presupuesto PDF. Se guardan en tu cuenta local."
+        />
         {!!vm.error && (
           <Text accessibilityRole="alert" style={s.error}>
             {vm.error}

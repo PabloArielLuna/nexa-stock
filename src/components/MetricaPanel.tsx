@@ -29,7 +29,6 @@ export default function MetricaPanel({ titulo, valor, detalle, color, icono, onP
         {valor}
       </Text>
       <Text style={s.title}>{titulo}</Text>
-      <Text style={s.detail}>{detalle}</Text>
     </TouchableOpacity>
   );
 }
@@ -38,7 +37,7 @@ const s = StyleSheet.create({
     flexGrow: 1,
     flexBasis: '45%',
     minWidth: 120,
-    padding: 18,
+    padding: 14,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,

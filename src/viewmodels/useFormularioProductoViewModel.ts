@@ -59,6 +59,8 @@ export const useFormularioProductoViewModel = (productoId?: string) => {
   );
   const [tocados, setTocados] = useState<Partial<Record<keyof FormProducto, boolean>>>({});
   const enviado = useRef(false);
+  const cargandoImagen = useRef(false);
+  const [cargandoFoto, setCargandoFoto] = useState(false);
   const [motivoAjuste, setMotivoAjuste] = useState('');
 
   const setField = <K extends keyof FormProducto>(campo: K, valor: FormProducto[K]) => {
@@ -80,7 +82,8 @@ export const useFormularioProductoViewModel = (productoId?: string) => {
     .flatMap((p) => [p.sku, p.codigoQr].filter((s): s is string => !!s));
   const errores: Errores<FormProducto> = validarProducto(form, nombresExistentes, skusExistentes);
   const requiereMotivo = !!productoEditado && Number(form.stock) !== productoEditado.stock;
-  const puedeGuardar = sinErrores(errores) && (!requiereMotivo || motivoValido(motivoAjuste));
+  const puedeGuardar =
+    !cargandoFoto && sinErrores(errores) && (!requiereMotivo || motivoValido(motivoAjuste));
 
   /** Muestra el error de un campo sólo si ya lo tocó o si tiene algo escrito. */
   const errorDe = (campo: keyof FormProducto): string | undefined =>
@@ -95,7 +98,9 @@ export const useFormularioProductoViewModel = (productoId?: string) => {
       : null;
 
   const cargarFoto = async (origen: 'camara' | 'galeria') => {
-    if (!activo || invitado) return;
+    if (!activo || invitado || cargandoImagen.current) return;
+    cargandoImagen.current = true;
+    setCargandoFoto(true);
     try {
       const resultado = origen === 'camara' ? await tomarFoto(activo.id) : await elegirDeGaleria(activo.id);
       if (resultado.ok) {
@@ -108,6 +113,9 @@ export const useFormularioProductoViewModel = (productoId?: string) => {
       }
     } catch {
       avisar('No se pudo abrir la foto', 'Intentá nuevamente desde la cámara o la galería.');
+    } finally {
+      cargandoImagen.current = false;
+      setCargandoFoto(false);
     }
   };
 
@@ -142,6 +150,7 @@ export const useFormularioProductoViewModel = (productoId?: string) => {
   };
 
   return {
+    cargandoFoto,
     motivoAjuste,
     setMotivoAjuste,
     requiereMotivo,

@@ -10,11 +10,9 @@ export default function AccesoRequeridoScreen() {
   return (
     <View style={s.root}>
       <Ionicons name="lock-closed-outline" size={40} color={colors.primary} />
-      <Text style={s.title}>Tu negocio merece su espacio.</Text>
-      <Text style={s.body}>
-        Iniciá sesión en el celular para administrar productos, registrar ventas y consultar tus números.
-      </Text>
-      <BotonPrimario label="Ir al acceso" icono="arrow-forward" onPress={salir} />
+      <Text style={s.title}>Ingresá a tu cuenta</Text>
+      <Text style={s.body}>Ingresá para administrar productos y ventas.</Text>
+      <BotonPrimario label="Ingresar" icono="arrow-forward" onPress={salir} />
     </View>
   );
 }

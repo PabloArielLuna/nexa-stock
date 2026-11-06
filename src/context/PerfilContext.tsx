@@ -4,7 +4,7 @@ import { generarId } from '../utils/formato';
 import { crearCredencial, Credencial, credencialValida } from '../services/credenciales';
 import { autenticar } from '../services/dispositivo';
 import { guardarProtegido, leerProtegido, migrarProtegido } from '../services/boveda';
-import { Platform } from 'react-native';
+import { limitacionAcceso } from '../services/entornoAcceso';
 import { comprobarPin } from '../services/acceso';
 
 export type Perfil = { id: string; nombre: string; credencial: Credencial; biometria?: boolean };
@@ -35,7 +35,8 @@ export function PerfilProvider({ children }: { children: React.ReactNode }) {
   const ocupado = useRef(false);
   const invitado = activo?.id === 'invitado';
   useEffect(() => {
-    if (Platform.OS === 'web') {
+    if (limitacionAcceso) {
+      setError(limitacionAcceso);
       setListo(true);
       return;
     }
@@ -70,8 +71,6 @@ export function PerfilProvider({ children }: { children: React.ReactNode }) {
       .finally(() => setListo(true));
   }, []);
   async function crear(nombre: string, pin: string) {
-    if (Platform.OS === 'web')
-      throw new Error('Creá tu usuario desde la app del celular. La web es una vista previa.');
     if (ocupado.current || error) throw new Error('El acceso no está disponible. Intentá nuevamente.');
     if (nombre.trim().length < 2 || nombre.trim().length > 60)
       throw new Error('Usá un nombre de 2 a 60 caracteres.');
@@ -89,7 +88,7 @@ export function PerfilProvider({ children }: { children: React.ReactNode }) {
     }
   }
   async function entrar(perfil: Perfil, pin: string) {
-    if (ocupado.current) return;
+    if (ocupado.current) throw new Error('Ya hay un acceso en curso.');
     const vigente = perfiles.find((p) => p.id === perfil.id);
     if (!vigente || error) throw new Error('Volvé a seleccionar tu perfil.');
     ocupado.current = true;

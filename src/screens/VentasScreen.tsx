@@ -43,7 +43,7 @@ const VentasScreen: React.FC<NativeStackScreenProps<VentasStackParamList, 'Lista
         }}
       />
       <View style={styles.encabezado}>
-        <Encabezado titulo="Cada venta cuenta." detalle="Tu actividad, con todos los números claros." />
+        <Encabezado titulo="Ventas" />
         <BotonPrimario
           label="Crear presupuesto PDF"
           icono="document-text-outline"

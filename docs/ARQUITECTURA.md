@@ -11,11 +11,13 @@
 - `services/almacenamiento`: lectura/migración y cola de escritura. Reexporta el validador para conservar imports anteriores.
 - `services/boveda`: cifrado del dispositivo y acceso a SecureStore. No sustituye una clave perdida si existe algún registro cifrado, incluso si se intenta crear un ámbito nuevo.
 - `services/respaldoDatos`: captura de inventario y traslado de fotos a un perfil nuevo.
-- `services/respaldoCripto`: formato cifrado portátil y derivación de contraseña.
+- `services/respaldoCripto`: formato cifrado portátil y derivación de contraseña. `cifrado.ts` usa expo-crypto; `cifrado.web.ts` adapta Web Crypto al mismo formato IV + contenido + etiqueta.
 - `services/respaldo`: selector de archivos y menú nativo para compartir. No decide sobre inventarios ni permisos de usuario.
 
 - `services/calendario.native`: permisos, destino y formulario con expo-calendar. Carga el módulo después de comprobar disponibilidad. `services/calendario.ts` ofrece la alternativa web sin API nativa.
 - `services/presupuestos`: impresión del PDF, copia a carpeta elegida, compartir y editor de correo. No calcula stock ni envía automáticamente. Maneja cancelación, confirmaciones limitadas del sistema y temporales.
+
+Metro selecciona los archivos `.web.ts` en navegador. `boveda.web.ts` usa Web Crypto e IndexedDB, verifica la clave antes de cada escritura y conserva registros si falta esa clave. `fotos.web.ts` reduce imágenes locales y guarda su contenido cifrado. `respaldo.web.ts` descarga/selecciona archivos .nexa; `presupuestos.web.ts` abre la plantilla existente para imprimir o guardar como PDF. Estos adaptadores no cambian el formato de las copias ni la bóveda nativa. Las cuentas no son identidades de servidor ni se sincronizan.
 
 La organización separa presentación, coordinación, reglas de negocio y adaptadores del dispositivo. Cada ampliación conserva esa división de responsabilidades.
 

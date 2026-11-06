@@ -37,11 +37,7 @@ export default function MovimientosScreen() {
   return (
     <View style={globalStyles.screen}>
       <View style={{ padding: 20, gap: 14 }}>
-        <Text style={s.title}>Cada cambio, registrado.</Text>
-        <Text style={s.body}>
-          Fecha, motivo y stock antes/después. Los cambios anteriores a esta actualización no se pueden
-          reconstruir.
-        </Text>
+        <Text style={s.title}>Movimientos</Text>
         <BarraBusqueda
           value={busqueda}
           onChangeText={setBusqueda}

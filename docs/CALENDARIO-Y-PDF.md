@@ -18,7 +18,7 @@ iOS informa si se guardó o canceló. Android solo informa que cerró el formula
 
 El membrete y el pie se imprimen dentro del flujo del documento, con márgenes nativos de 36 puntos en iOS y su equivalente en la regla CSS de impresión. No se usan coordenadas negativas para colocar el logo fuera del área imprimible. La propuesta presenta logo arriba, datos de cliente/emisor en dos columnas, tabla de productos y resumen final. La cabecera de la tabla se repite al paginar; el membrete aparece al principio y el pie comercial al final. Si un logo configurado no puede abrirse, se informa y no se exporta silenciosamente sin él.
 
-La revisión visual local incluyó una propuesta de una página y otra de 30 productos, nombres largos, importes máximos y observaciones extensas: márgenes, logo y texto dentro del área imprimible en el motor de escritorio. La confirmación del PDF regenerado por WKWebView en el iPhone sigue pendiente de la prueba del usuario.
+La revisión visual local incluyó una propuesta de una página y otra de 30 productos, nombres largos, importes máximos y observaciones extensas: márgenes, logo y texto dentro del área imprimible en el motor de escritorio. El usuario confirmó que el PDF corregido se ve bien en su iPhone; faltan las demás pruebas físicas de exportación.
 
 En el formulario del presupuesto hay tres acciones. Antes de exportar, NEXA valida y archiva la propuesta cifrada para que pueda retomarse aunque el usuario cancele el destino.
 
@@ -47,3 +47,7 @@ Pendiente en iPhone y Android:
 7. Preparar correo, revisar adjunto, cancelar/guardar borrador y comprobar cuenta no configurada. Cualquier envío real requiere decisión del usuario.
 
 Fuentes oficiales: [Expo Calendar SDK 57](https://docs.expo.dev/versions/v57.0.0/sdk/calendar/), [Expo MailComposer](https://docs.expo.dev/versions/latest/sdk/mail-composer/), [Expo FileSystem](https://docs.expo.dev/versions/latest/sdk/filesystem/).
+
+## Navegador
+
+El presupuesto usa la misma plantilla con marca y logo. **Imprimir / Guardar PDF** abre una ventana de impresión; el usuario elige Guardar como PDF. Cancelar no guarda un archivo. Se requieren ventanas emergentes habilitadas. No se muestran los botones nativos de WhatsApp/correo; el archivo descargado se puede adjuntar desde el equipo. El 05/11/2026 se verificó el contenido de la ventana con logo, pie y SKU en Chrome.

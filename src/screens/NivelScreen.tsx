@@ -11,11 +11,8 @@ export default function NivelScreen() {
   const referencia = vm.referencia.lateral !== 0 || vm.referencia.frontal !== 0;
   return (
     <ScrollView style={globalStyles.screen} contentContainerStyle={globalStyles.scrollContent}>
-      <Text style={s.title}>Cada cosa, bien apoyada.</Text>
-      <Text style={s.body}>
-        Apoyá el celular plano sobre la estantería para revisar su inclinación. El acelerómetro mide el
-        ángulo; el giroscopio ayuda a detectar movimiento.
-      </Text>
+      <Text style={s.title}>Nivel</Text>
+      <Text style={s.body}>Apoyá el teléfono sobre una superficie y mantenelo quieto.</Text>
       <View style={[globalStyles.card, s.center]}>
         <Text style={[s.state, { color }]}>
           {!vm.activo

@@ -4,7 +4,7 @@ import {
   aesEncryptAsync,
   aesDecryptAsync,
   getRandomBytesAsync,
-} from 'expo-crypto';
+} from './cifrado';
 import { pbkdf2Async } from '@noble/hashes/pbkdf2.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';

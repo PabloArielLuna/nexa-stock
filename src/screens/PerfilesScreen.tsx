@@ -1,114 +1,162 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAccesoViewModel } from '../viewmodels/useAccesoViewModel';
 import { etiquetaBiometria, iconoBiometria } from '../services/dispositivo';
-
 import BotonPrimario from '../components/BotonPrimario';
+import Ayuda from '../components/Ayuda';
 import { colors } from '../styles/colors';
-
 export default function PerfilesScreen() {
   const vm = useAccesoViewModel();
-  const { nombre, setNombre, pin, setPin, seleccionado, error, guardando, repetido, crear } = vm;
+  const creando = vm.modo === 'crear';
   return (
     <SafeAreaView style={s.root}>
       <KeyboardAvoidingView style={s.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
-          <View style={s.logo}>
-            <Ionicons name="layers-outline" size={30} color={colors.onPrimary} />
+          <View style={s.brandRow}>
+            <View style={s.logo}>
+              <Ionicons name="layers-outline" size={23} color={colors.onPrimary} />
+            </View>
+            <Text style={s.brand}>NEXA</Text>
           </View>
-          <Text style={s.brand}>NEXA</Text>
-          <Text style={s.title}>Tu negocio.{'\n'}El siguiente nivel.</Text>
-          <Text style={s.body}>
-            Menos vueltas. Más control. Tu inventario y tus ventas, en un solo lugar.
-          </Text>
           <View style={s.card}>
-            {!vm.accesoDisponible && (
-              <Text style={s.body}>
-                Esta es la vista previa web. Explorá el catálogo como invitado; el acceso y el guardado
-                protegido están disponibles desde Expo Go en tu celular.
-              </Text>
-            )}
-            <Text style={s.heading}>
-              {seleccionado ? `Hola, ${seleccionado.nombre}` : 'Tu espacio empieza acá'}
-            </Text>
-            {!seleccionado &&
-              vm.perfiles.map((p) => (
-                <BotonPrimario
-                  key={p.id}
-                  variante="secundario"
-                  icono="person-outline"
-                  label={`Ingresar como ${p.nombre}`}
-                  onPress={() => {
-                    vm.elegir(p);
-                  }}
-                />
+            <View style={s.tabs}>
+              {(['ingresar', 'crear'] as const).map((modo) => (
+                <TouchableOpacity
+                  key={modo}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: vm.modo === modo, disabled: vm.guardando }}
+                  disabled={vm.guardando}
+                  style={[s.tab, vm.modo === modo && s.active]}
+                  onPress={() => vm.cambiarModo(modo)}
+                >
+                  <Text style={[s.tabText, vm.modo === modo && s.activeText]}>
+                    {modo === 'ingresar' ? 'Ingresar' : 'Crear cuenta'}
+                  </Text>
+                </TouchableOpacity>
               ))}
-            <Text style={s.label}>{seleccionado ? 'INGRESÁ TU PIN LOCAL' : 'CREAR UN USUARIO LOCAL'}</Text>
-            {!seleccionado && (
+            </View>
+            <Text accessibilityRole="header" style={s.heading}>
+              {creando ? 'Creá tu cuenta' : 'Bienvenido'}
+            </Text>
+            {!creando && vm.perfiles.length > 0 && (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={s.profiles}
+              >
+                {vm.perfiles.map((p) => (
+                  <TouchableOpacity
+                    key={p.id}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Usar cuenta ${p.nombre}`}
+                    onPress={() => vm.elegir(p)}
+                    disabled={vm.guardando}
+                    style={s.profile}
+                  >
+                    <Text style={s.profileText}>{p.nombre}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            )}
+            <View style={s.field}>
+              <Text style={s.label}>Usuario o negocio</Text>
               <TextInput
-                accessibilityLabel="Nombre del perfil"
-                placeholder="Tu nombre o tu negocio"
+                accessibilityLabel="Usuario o negocio"
+                placeholder="Tu nombre o negocio"
                 placeholderTextColor={colors.textLight}
-                value={nombre}
-                maxLength={40}
-                onChangeText={setNombre}
+                value={vm.nombre}
+                maxLength={60}
+                autoCapitalize="none"
+                autoCorrect={false}
+                editable={!vm.guardando}
+                onChangeText={vm.setNombre}
                 style={s.input}
               />
+            </View>
+            <View style={s.field}>
+              <Text style={s.label}>PIN de 6 dígitos</Text>
+              <TextInput
+                accessibilityLabel="PIN de seis dígitos"
+                placeholder="••••••"
+                placeholderTextColor={colors.textLight}
+                value={vm.pin}
+                secureTextEntry
+                keyboardType="number-pad"
+                maxLength={6}
+                editable={!vm.guardando}
+                onChangeText={(v) => vm.setPin(v.replace(/\D/g, ''))}
+                onSubmitEditing={() => {
+                  if (vm.puedeEnviar && !creando) void vm.enviar();
+                }}
+                style={s.input}
+              />
+            </View>
+            {creando && (
+              <View style={s.field}>
+                <Text style={s.label}>Repetí el PIN</Text>
+                <TextInput
+                  accessibilityLabel="Repetir PIN"
+                  placeholder="••••••"
+                  placeholderTextColor={colors.textLight}
+                  value={vm.confirmacion}
+                  secureTextEntry
+                  keyboardType="number-pad"
+                  maxLength={6}
+                  editable={!vm.guardando}
+                  onChangeText={(v) => vm.setConfirmacion(v.replace(/\D/g, ''))}
+                  style={s.input}
+                />
+              </View>
             )}
-            <TextInput
-              accessibilityLabel="PIN de seis dígitos"
-              placeholder="PIN de 6 dígitos"
-              placeholderTextColor={colors.textLight}
-              value={pin}
-              secureTextEntry
-              keyboardType="number-pad"
-              maxLength={6}
-              onChangeText={(v) => setPin(v.replace(/\D/g, ''))}
-              style={s.input}
-            />
-            {(error || vm.errorSesion || repetido) && (
-              <Text style={s.error}>{error || vm.errorSesion || 'Ya existe un perfil con ese nombre.'}</Text>
+            {!!(vm.error || vm.errorSesion) && (
+              <Text accessibilityRole="alert" style={s.error}>
+                {vm.error || vm.errorSesion}
+              </Text>
             )}
             <BotonPrimario
-              label={seleccionado ? 'Iniciar sesión' : 'Crear mi espacio'}
+              label={creando ? 'Crear cuenta' : 'Ingresar'}
               icono="arrow-forward"
-              cargando={guardando}
+              cargando={vm.guardando}
               deshabilitado={!vm.puedeEnviar}
-              onPress={() => void crear()}
+              onPress={() => void vm.enviar()}
             />
-            {seleccionado?.biometria && Platform.OS !== 'web' && (
+            {!creando && vm.seleccionado?.biometria && Platform.OS !== 'web' && (
               <BotonPrimario
                 label={`Ingresar con ${etiquetaBiometria}`}
                 icono={iconoBiometria}
                 variante="secundario"
-                cargando={guardando}
-                onPress={() => void vm.ingresarConBiometria()}
+                cargando={vm.guardando}
+                onPress={() => void vm.enviar(true)}
               />
             )}
-            {seleccionado && (
-              <BotonPrimario
-                label="Volver"
-                variante="secundario"
-                deshabilitado={guardando}
-                onPress={() => {
-                  vm.elegir(null);
-                }}
-              />
-            )}
+            <Ayuda
+              titulo="Tu cuenta local"
+              mensaje={
+                Platform.OS === 'web'
+                  ? 'La cuenta y el inventario se guardan cifrados en este navegador. No se sincronizan con otros navegadores o celulares. Guardá tu PIN: no tiene recuperación por correo. Borrar los datos del sitio puede eliminar la cuenta y su inventario; exportá una copia antes.'
+                  : 'La cuenta y el inventario se guardan cifrados en este teléfono. No se sincronizan con otros dispositivos. Guardá tu PIN: no tiene recuperación por correo. Exportá una copia antes de desinstalar NEXA.'
+              }
+              label="Sobre tu cuenta"
+            />
           </View>
           <BotonPrimario
-            label="Explorar como invitado"
+            label="Entrar como invitado"
             variante="secundario"
             icono="compass-outline"
-            deshabilitado={guardando}
+            deshabilitado={vm.guardando}
             onPress={vm.explorar}
           />
-          <Text style={s.foot}>
-            TU INVENTARIO SE GUARDA CIFRADO EN EL CELULAR.{'\n'}El invitado solo accede a un catálogo de
-            ejemplo.{'\n'}Elegí un PIN que recuerdes: no hay recuperación por correo.
-          </Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -116,36 +164,57 @@ export default function PerfilesScreen() {
 }
 const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
-  content: { padding: 28, paddingVertical: 48, maxWidth: 520, width: '100%', alignSelf: 'center', gap: 20 },
+  content: {
+    padding: 20,
+    paddingTop: 28,
+    paddingBottom: 28,
+    maxWidth: 460,
+    width: '100%',
+    alignSelf: 'center',
+    gap: 18,
+  },
+  brandRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   logo: {
-    width: 60,
-    height: 60,
-    borderRadius: 20,
+    width: 42,
+    height: 42,
+    borderRadius: 13,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  brand: { color: colors.primary, fontSize: 16, fontWeight: '900', letterSpacing: 6 },
-  title: { color: colors.text, fontSize: 42, lineHeight: 47, letterSpacing: -1.8, fontWeight: '700' },
-  body: { color: colors.textMuted, fontSize: 16, lineHeight: 25 },
+  brand: { color: colors.text, fontSize: 23, fontWeight: '800', letterSpacing: 3 },
   card: {
     backgroundColor: colors.surface,
-    borderRadius: 24,
-    padding: 22,
-    gap: 16,
+    borderRadius: 20,
+    padding: 20,
+    gap: 15,
     borderWidth: 1,
     borderColor: colors.border,
   },
-  heading: { color: colors.text, fontSize: 20, fontWeight: '600' },
-  label: { color: colors.textLight, fontSize: 11, letterSpacing: 2, marginTop: 10 },
+  tabs: { flexDirection: 'row', gap: 4, backgroundColor: colors.background, borderRadius: 12, padding: 4 },
+  tab: { flex: 1, alignItems: 'center', paddingVertical: 12, borderRadius: 9 },
+  active: { backgroundColor: colors.primary },
+  tabText: { color: colors.textMuted, fontWeight: '600' },
+  activeText: { color: colors.onPrimary },
+  heading: { color: colors.text, fontSize: 23, fontWeight: '700' },
+  field: { gap: 7 },
+  label: { color: colors.textMuted, fontSize: 13 },
   input: {
     color: colors.text,
-    padding: 16,
-    borderRadius: 12,
+    padding: 13,
+    minHeight: 48,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.border,
     fontSize: 16,
   },
-  error: { color: colors.error, fontSize: 13 },
-  foot: { color: colors.textLight, fontSize: 11, lineHeight: 20, textAlign: 'center', letterSpacing: 1 },
+  error: { color: colors.error, fontSize: 13, lineHeight: 20 },
+  profiles: { gap: 8 },
+  profile: {
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    backgroundColor: colors.primaryLight,
+    borderRadius: 20,
+  },
+  profileText: { color: colors.primary, fontSize: 12 },
 });

@@ -2,12 +2,12 @@
 
 ## Protección implementada
 
-- Cifrado autenticado AES-256-GCM mediante expo-crypto; nonce aleatorio de 12 bytes y etiqueta de 16 bytes. El contexto autenticado vincula cada registro a su ámbito.
-- Clave aleatoria en SecureStore con disponibilidad WHEN_UNLOCKED_THIS_DEVICE_ONLY. Si hay datos cifrados y falta la clave, se informa el fallo y no se genera otra que los sobrescriba.
-- AsyncStorage conserva registros cifrados de inventario, perfiles, intentos, marca, borradores e imágenes. No conserva PIN en claro: se verifica PBKDF2-SHA256, 100.000 iteraciones, salt aleatorio de 24 bytes.
+- En teléfono: cifrado autenticado AES-256-GCM mediante expo-crypto; nonce aleatorio de 12 bytes y etiqueta de 16 bytes. El contexto autenticado vincula cada registro a su ámbito.
+- En teléfono: clave aleatoria en SecureStore con disponibilidad WHEN_UNLOCKED_THIS_DEVICE_ONLY. Si hay datos cifrados y falta la clave, se informa el fallo y no se genera otra que los sobrescriba.
+- En teléfono, AsyncStorage conserva registros cifrados de inventario, perfiles, intentos, marca, borradores e imágenes. No conserva PIN en claro: se verifica PBKDF2-SHA256, 100.000 iteraciones, salt aleatorio de 24 bytes.
 - Cinco intentos fallidos generan una espera de un minuto, guardada antes de validar el siguiente intento.
 - Separación de datos por identificador de perfil; el invitado usa ejemplos en memoria y no puede modificar información privada. El catálogo de ejemplo no carga datos de usuarios.
-- Bloqueo con PIN al volver del segundo plano. Biometría opcional delegada al sistema. Protección de capturas y desenfoque del selector de apps según soporte del sistema.
+- En teléfono: bloqueo con PIN al volver del segundo plano. Biometría opcional delegada al sistema. Protección de capturas y desenfoque del selector de apps según soporte del sistema.
 - Migración de datos anteriores: validar, cifrar, leer y verificar antes de retirar el registro de texto anterior. Fotografías nuevas se reducen y cifran; solo se eliminan copias temporales del caché de la app, nunca originales de la galería.
 
 ## Límites
@@ -20,9 +20,9 @@ Los archivos temporales usados por cámara y generación de PDF pueden existir m
 
 Un PDF que el usuario exporta es un documento legible fuera de NEXA. Solo contiene la propuesta comercial; no incluye costo de compra ni recargo. El usuario elige destino y destinatario desde el sistema.
 
-La web solo ofrece una vista de ejemplo; no simula protección nativa. Las pruebas automatizadas verifican el formato de cifrado y las reglas con adaptadores de prueba, pero no certifican la implementación del hardware, Keychain/Keystore o los permisos. Falta la comprobación física en iPhone y Android.
+La web permite perfiles locales con PIN. Cifra registros y fotos con AES-256-GCM mediante Web Crypto; guarda registros y una clave no exportable en IndexedDB. Se exige HTTPS o localhost. Una clave no exportable no protege frente a código malicioso ejecutado en el mismo origen ni equivale a Keychain/Keystore. El control entre perfiles es local, sin claves independientes por persona. Borrar datos del sitio, perder el perfil del navegador o usar modo privado puede hacer perder el acceso; conservar una copia externa. Si falta la clave y existen registros, no se genera otra ni se reemplazan. Las pruebas automatizadas verifican el formato de cifrado y las reglas con adaptadores de prueba, pero no certifican la implementación del hardware, Keychain/Keystore o los permisos. Falta la comprobación física en iPhone y Android.
 
-La auditoría de dependencias del 22/10/2026 registró avisos de paquetes transitivos; no se volvió a ejecutar en esta revisión documental. No se aplicó una actualización forzada que rebajaría Expo y rompería compatibilidad. Antes de una publicación comercial corresponde repetir la auditoría y evaluar actualizaciones compatibles. Ver [DEPENDENCIAS.md](DEPENDENCIAS.md). Esta entrega académica no representa una auditoría de seguridad de producción.
+La revisión del 05/11/2026 volvió a consultar dependencias y conservó Expo SDK 57. Los resultados y pendientes están en DEPENDENCIAS.md. No se aplicó una actualización forzada que rebajaría Expo y rompería compatibilidad. Antes de una publicación comercial corresponde repetir la auditoría y evaluar actualizaciones compatibles. Ver [DEPENDENCIAS.md](DEPENDENCIAS.md). Esta entrega académica no representa una auditoría de seguridad de producción.
 
 ## Calendario y archivos exportados
 

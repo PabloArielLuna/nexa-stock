@@ -37,12 +37,7 @@ export default function InicioScreen({ navigation }: Props) {
   return (
     <ScrollView style={s.root} contentContainerStyle={s.page}>
       <Encabezado
-        titulo={invitado ? 'Panel de ejemplo.' : 'Tu dashboard.'}
-        detalle={
-          invitado
-            ? 'Datos ficticios para conocer NEXA. Tu información real siempre queda en tu sesión.'
-            : `Hola, ${activo?.nombre}. Este es el pulso de tu negocio.`
-        }
+        titulo={invitado ? 'Inicio · Ejemplo' : 'Inicio'}
         accion={
           <TouchableOpacity
             accessibilityRole="button"
@@ -54,12 +49,31 @@ export default function InicioScreen({ navigation }: Props) {
           </TouchableOpacity>
         }
       />
-      <View style={s.status}>
-        <View style={s.dot} />
-        <Text style={s.statusText}>
-          {invitado ? 'DEMOSTRACIÓN · NO SON DATOS DE USUARIOS' : 'TU ESPACIO, EN ESTE DISPOSITIVO'}
-        </Text>
+      <View style={s.actions}>
+        <BotonPrimario
+          label={invitado ? 'Ingresar' : 'Nuevo producto'}
+          icono="add"
+          estilo={{ flex: 1 }}
+          onPress={nuevo}
+        />
+        <BotonPrimario
+          label="Escanear"
+          icono="scan-outline"
+          variante="secundario"
+          estilo={{ flex: 1 }}
+          onPress={() => navigation.navigate('InventarioTab', { screen: 'Escanear', initial: false })}
+        />
       </View>
+      <BotonPrimario
+        label={invitado ? 'Ver catálogo' : 'Crear presupuesto'}
+        icono={invitado ? 'cube-outline' : 'document-text-outline'}
+        variante="secundario"
+        onPress={() =>
+          invitado
+            ? navigation.navigate('InventarioTab', { screen: 'ListaProductos' })
+            : navigation.navigate('Ventas', { screen: 'Presupuesto', initial: false })
+        }
+      />
       <View style={[s.columns, amplia && s.wide]}>
         <LinearGradient
           colors={['#2457FF', '#1336BA']}
@@ -74,7 +88,7 @@ export default function InicioScreen({ navigation }: Props) {
           <Text style={s.amount} adjustsFontSizeToFit numberOfLines={1}>
             {formatoPrecio(vm.ingresosMes)}
           </Text>
-          <Text style={s.heroSub}>{vm.cantidadVentasMes} operaciones · Hecho por vos.</Text>
+          <Text style={s.heroSub}>{vm.cantidadVentasMes} operaciones</Text>
           <View style={s.heroRule} />
           <View style={s.between}>
             <Text style={s.heroSub}>Ganancia del mes</Text>
@@ -118,7 +132,7 @@ export default function InicioScreen({ navigation }: Props) {
       </View>
       <View style={s.card}>
         <View style={s.between}>
-          <Text style={s.heading}>Cómo se reparte tu stock</Text>
+          <Text style={s.heading}>Stock por categoría</Text>
           <Ionicons name="pie-chart-outline" size={23} color={colors.violet} />
         </View>
         <Text style={s.muted}>Unidades disponibles por categoría</Text>
@@ -148,35 +162,10 @@ export default function InicioScreen({ navigation }: Props) {
           <Text style={s.muted}>Agregá productos para ver la distribución.</Text>
         )}
       </View>
-      <View style={s.actions}>
-        <TouchableOpacity
-          accessibilityRole="button"
-          style={s.action}
-          onPress={() => navigation.navigate('InventarioTab', { screen: 'Escanear', initial: false })}
-        >
-          <Ionicons name="scan-outline" size={25} color={colors.primary} />
-          <Text style={s.actionText}>Escanear</Text>
-          <Text style={s.small}>Encontrá un producto</Text>
-        </TouchableOpacity>
-        <TouchableOpacity accessibilityRole="button" style={s.action} onPress={nuevo}>
-          <Ionicons name="add-circle-outline" size={25} color={colors.primary} />
-          <Text style={s.actionText}>Nuevo producto</Text>
-          <Text style={s.small}>Hacé crecer tu catálogo</Text>
-        </TouchableOpacity>
-      </View>
-      <BotonPrimario
-        label={invitado ? 'Iniciar sesión para crear presupuestos' : 'Crear presupuesto PDF'}
-        icono="document-text-outline"
-        variante="secundario"
-        onPress={() => {
-          if (invitado) salir();
-          else navigation.navigate('Ventas', { screen: 'Presupuesto', initial: false });
-        }}
-      />
       <View style={s.card}>
         <View style={s.between}>
           <View>
-            <Text style={s.heading}>Una semana en movimiento</Text>
+            <Text style={s.heading}>Últimos 7 días</Text>
             <Text style={s.muted}>Ingresos · últimos 7 días</Text>
           </View>
           <Ionicons name="pulse-outline" size={24} color={colors.primary} />
@@ -204,7 +193,7 @@ export default function InicioScreen({ navigation }: Props) {
         </View>
       </View>
       <View style={s.between}>
-        <Text style={s.heading}>Tu próximo movimiento</Text>
+        <Text style={s.heading}>Para reponer</Text>
         <TouchableOpacity accessibilityRole="button" onPress={abrirAnalisis}>
           <Text style={s.link}>Ver todo ↗</Text>
         </TouchableOpacity>
@@ -227,9 +216,7 @@ export default function InicioScreen({ navigation }: Props) {
             <View style={s.grow}>
               <Text style={s.productName}>{p.nombre}</Text>
               <Text style={s.muted}>
-                {p.stock === 0
-                  ? 'Agotado · recuperá oportunidades'
-                  : `${p.stock} disponibles · mínimo ${p.stockMinimo}`}
+                {p.stock === 0 ? 'Agotado' : `${p.stock} disponibles · mínimo ${p.stockMinimo}`}
               </Text>
             </View>
             <Ionicons name="arrow-forward" size={20} color={colors.warning} />
@@ -237,11 +224,7 @@ export default function InicioScreen({ navigation }: Props) {
         ))
       ) : (
         <View style={s.card}>
-          <Text style={s.muted}>
-            {vm.cantidadProductos
-              ? 'Tu stock está al día. Buen momento para vender.'
-              : 'Tu espacio está listo. Agregá tu primer producto para empezar.'}
-          </Text>
+          <Text style={s.muted}>{vm.cantidadProductos ? 'Stock al día.' : 'Todavía no hay productos.'}</Text>
         </View>
       )}
       <View style={s.between}>
@@ -268,21 +251,12 @@ export default function InicioScreen({ navigation }: Props) {
       ) : (
         <Text style={s.muted}>Las ventas que registres van a aparecer acá.</Text>
       )}
-      <Text style={s.footer}>NEXA · MENOS FRICCIÓN. MÁS NEGOCIO.</Text>
-      {!invitado && (
-        <BotonPrimario
-          label="Herramienta: nivel de estantería"
-          icono="speedometer-outline"
-          variante="secundario"
-          onPress={() => navigation.navigate('InventarioTab', { screen: 'Nivel', initial: false })}
-        />
-      )}
     </ScrollView>
   );
 }
 const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
-  page: { padding: 24, gap: 24, width: '100%', maxWidth: 1100, alignSelf: 'center', paddingBottom: 40 },
+  page: { padding: 20, gap: 16, width: '100%', maxWidth: 1100, alignSelf: 'center', paddingBottom: 40 },
   avatar: {
     width: 46,
     height: 46,
@@ -299,11 +273,11 @@ const s = StyleSheet.create({
   statusText: { fontSize: 10, letterSpacing: 1.6, color: colors.textMuted },
   columns: { gap: 14 },
   wide: { flexDirection: 'row' },
-  hero: { flex: 1, padding: 25, borderRadius: 24, gap: 12, overflow: 'hidden' },
+  hero: { flex: 1, padding: 18, borderRadius: 20, gap: 12, overflow: 'hidden' },
   heroLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 1.8, color: colors.white },
-  amount: { fontSize: 46, fontWeight: '600', letterSpacing: -2, color: colors.white, marginTop: 14 },
+  amount: { fontSize: 38, fontWeight: '600', letterSpacing: -2, color: colors.white, marginTop: 6 },
   heroSub: { color: '#DFE7FF', fontSize: 13 },
-  heroRule: { height: 1, backgroundColor: '#FFFFFF35', marginTop: 16 },
+  heroRule: { height: 1, backgroundColor: '#FFFFFF35', marginTop: 8 },
   heroProfit: { color: colors.white, fontSize: 18, fontWeight: '700' },
   metrics: { flex: 1, flexDirection: 'row', flexWrap: 'wrap', gap: 14 },
   distribution: {
@@ -364,5 +338,5 @@ const s = StyleSheet.create({
   sale: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   saleIcon: { padding: 10, borderRadius: 14, backgroundColor: colors.primaryLight },
   saleAmount: { color: colors.text, fontWeight: '600', fontSize: 13 },
-  footer: { color: colors.textLight, fontSize: 9, letterSpacing: 2, textAlign: 'center', marginTop: 16 },
+  footer: { color: colors.textLight, fontSize: 9, letterSpacing: 2, textAlign: 'center', marginTop: 8 },
 });

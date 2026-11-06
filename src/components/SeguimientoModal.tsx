@@ -10,7 +10,7 @@ export default function SeguimientoModal({ vm }: { vm: ReturnType<typeof useSegu
       <View style={s.fondo}>
         <View style={s.card}>
           <ScrollView contentContainerStyle={s.contenido}>
-            <Text style={s.titulo}>El próximo paso.</Text>
+            <Text style={s.titulo}>Agendar seguimiento</Text>
             <Text style={s.texto}>Seguimiento de {vm.numero}</Text>
             {vm.limitacionCalendario ? (
               <Text style={s.texto}>{vm.limitacionCalendario}</Text>

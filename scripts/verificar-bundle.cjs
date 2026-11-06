@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const raiz = path.resolve(__dirname, '..', 'dist', '_expo', 'static', 'js');
-const vigiladas = ['braces', 'node-forge', 'uuid'];
+const vigiladas = ['braces', 'node-forge', 'uuid', 'glob', 'minimatch'];
 function mapas(carpeta) {
   return fs
     .readdirSync(carpeta, { withFileTypes: true })

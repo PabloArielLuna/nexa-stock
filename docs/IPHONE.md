@@ -54,4 +54,4 @@ Ya que tenés iPhone, la prueba física en tu dispositivo es la referencia para 
 - En compilación propia nueva: biometría aceptada, cancelada, no configurada y regreso a PIN; calendario con permiso concedido/rechazado, elección de fecha/destino, guardado y cancelación.
 - PDF corregido: confirmar logo y datos ya guardados, márgenes y varias páginas en iPhone. Probar Guardar PDF, Compartir PDF y correo adjunto, incluidos cancelación y cuenta no configurada.
 
-Las pruebas en navegador solo comprueban la interfaz de ejemplo; estas verificaciones nativas siguen pendientes hasta usar un teléfono.
+Las pruebas de navegador comprueban acceso, inventario y archivos en web, incluyendo tamaño móvil. Estas verificaciones nativas siguen pendientes hasta usar un teléfono. El usuario ya confirmó que el PDF corregido se ve bien en iPhone; falta ampliar esa comprobación a los demás casos de la lista.

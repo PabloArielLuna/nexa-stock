@@ -45,8 +45,7 @@ const ListaProductosScreen: React.FC<Props> = ({ navigation }) => {
       />
       <View style={styles.encabezado}>
         <Encabezado
-          titulo={invitado ? 'El catálogo.' : 'Tu inventario.'}
-          detalle={invitado ? 'Productos de ejemplo para explorar NEXA.' : 'Cada producto, en su lugar.'}
+          titulo={invitado ? 'Catálogo' : 'Inventario'}
           accion={
             <TouchableOpacity
               accessibilityRole="button"
@@ -113,11 +112,6 @@ const ListaProductosScreen: React.FC<Props> = ({ navigation }) => {
               mensaje={'Tocá "Nuevo" para cargar tu primer producto.'}
             />
           )
-        }
-        ListFooterComponent={
-          !invitado && vm.productosVisibles.length > 0 ? (
-            <Text style={styles.pista}>Mantené presionado un producto para eliminarlo</Text>
-          ) : null
         }
       />
 

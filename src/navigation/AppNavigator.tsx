@@ -52,7 +52,10 @@ export default function AppNavigator() {
     <SafeAreaView style={s.root} edges={['top', 'left', 'right']}>
       {invitado && (
         <View style={s.demo}>
-          <Text style={s.demoText}>INVITADO · DATOS DE EJEMPLO · SOLO LECTURA</Text>
+          <Text style={s.demoText}>Invitado · Ejemplo</Text>
+          <TouchableOpacity accessibilityRole="button" onPress={salir}>
+            <Text style={s.link}>Ingresar</Text>
+          </TouchableOpacity>
         </View>
       )}
       {guardando && (

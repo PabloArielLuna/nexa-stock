@@ -26,7 +26,7 @@ export default function PresupuestosGuardadosScreen({
   return (
     <View style={globalStyles.screen}>
       <View style={{ padding: 20, gap: 16 }}>
-        <Text style={s.title}>Tus propuestas.</Text>
+        <Text style={s.title}>Presupuestos</Text>
         <BarraBusqueda
           value={busqueda}
           onChangeText={setBusqueda}

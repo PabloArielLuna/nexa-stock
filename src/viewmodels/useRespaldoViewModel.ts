@@ -75,7 +75,7 @@ export function useRespaldoViewModel() {
         setClave('');
         setRepeticion('');
         setMensaje(
-          'Se cerró el menú para compartir. Comprobá que guardaste el archivo .nexa fuera de la app. Cancelar el menú no guarda una copia.',
+          'Copia preparada. Comprobá que guardaste el archivo .nexa fuera de NEXA. Cancelar no guarda una copia.',
         );
       }),
     leer: () =>

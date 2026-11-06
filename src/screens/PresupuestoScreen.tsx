@@ -13,6 +13,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { VentasStackParamList } from '../types/navigation';
 import { usePresupuestoViewModel } from '../viewmodels/usePresupuestoViewModel';
 import CampoTexto from '../components/CampoTexto';
+import Ayuda from '../components/Ayuda';
 import BarraBusqueda from '../components/BarraBusqueda';
 import BotonPrimario from '../components/BotonPrimario';
 import PantallaCarga from '../components/PantallaCarga';
@@ -34,20 +35,23 @@ export default function PresupuestoScreen({
       keyboardVerticalOffset={90}
     >
       <ScrollView contentContainerStyle={globalStyles.scrollContent} keyboardShouldPersistTaps="handled">
-        <Text style={s.title}>Propuestas que venden.</Text>
-        <Text style={s.body}>{vm.form.numero} · El presupuesto no descuenta stock.</Text>
-        <BotonPrimario
-          label="Configurar membrete y logo"
-          variante="secundario"
-          icono="color-palette-outline"
-          onPress={() => navigation.navigate('Marca')}
-        />
-        <BotonPrimario
-          label="Presupuestos guardados"
-          variante="secundario"
-          icono="archive-outline"
-          onPress={() => navigation.navigate('PresupuestosGuardados')}
-        />
+        <Text style={s.body}>{vm.form.numero}</Text>
+        <View style={s.row}>
+          <BotonPrimario
+            label="Mi marca"
+            variante="secundario"
+            icono="color-palette-outline"
+            estilo={{ flex: 1 }}
+            onPress={() => navigation.navigate('Marca')}
+          />
+          <BotonPrimario
+            label="Guardados"
+            variante="secundario"
+            icono="archive-outline"
+            estilo={{ flex: 1 }}
+            onPress={() => navigation.navigate('PresupuestosGuardados')}
+          />
+        </View>
         <View style={[globalStyles.card, s.fields]}>
           <CampoTexto
             label="Cliente *"
@@ -73,7 +77,7 @@ export default function PresupuestoScreen({
             />
           </View>
         </View>
-        <Text style={s.heading}>1. Elegí los productos</Text>
+        <Text style={s.heading}>Productos</Text>
         <BarraBusqueda
           value={vm.busqueda}
           onChangeText={vm.setBusqueda}
@@ -103,7 +107,7 @@ export default function PresupuestoScreen({
             <Text style={s.body}>No hay productos para agregar. Cargalos primero en Inventario.</Text>
           )}
         </View>
-        <Text style={s.heading}>2. Ajustá tu propuesta</Text>
+        <Text style={s.heading}>Detalle</Text>
         {!vm.form.lineas.length && (
           <Text style={s.body}>Agregá al menos un producto. Máximo 30 por presupuesto.</Text>
         )}
@@ -185,26 +189,30 @@ export default function PresupuestoScreen({
           </Text>
         )}
         <BotonPrimario
-          label="Compartir PDF · WhatsApp y otras apps"
+          label={Platform.OS === 'web' ? 'Imprimir / Guardar PDF' : 'Compartir PDF'}
           icono="document-text-outline"
           cargando={vm.ocupado}
           deshabilitado={!vm.puedeGuardar}
-          onPress={() => void vm.guardar(true)}
+          onPress={() => void vm.guardar(true, Platform.OS === 'web' ? 'guardar' : 'compartir')}
         />
-        <BotonPrimario
-          label="Guardar PDF en el teléfono"
-          icono="download-outline"
-          variante="secundario"
-          deshabilitado={!vm.puedeGuardar || vm.ocupado}
-          onPress={() => void vm.guardar(true, 'guardar')}
-        />
-        <BotonPrimario
-          label="Preparar correo con PDF adjunto"
-          icono="mail-outline"
-          variante="secundario"
-          deshabilitado={!vm.puedeGuardar || vm.ocupado}
-          onPress={() => void vm.guardar(true, 'correo')}
-        />
+        {Platform.OS !== 'web' && (
+          <>
+            <BotonPrimario
+              label="Guardar PDF en el teléfono"
+              icono="download-outline"
+              variante="secundario"
+              deshabilitado={!vm.puedeGuardar || vm.ocupado}
+              onPress={() => void vm.guardar(true, 'guardar')}
+            />
+            <BotonPrimario
+              label="Preparar correo con PDF adjunto"
+              icono="mail-outline"
+              variante="secundario"
+              deshabilitado={!vm.puedeGuardar || vm.ocupado}
+              onPress={() => void vm.guardar(true, 'correo')}
+            />
+          </>
+        )}
         {!!vm.resultado && (
           <Text accessibilityRole="alert" style={s.body}>
             {vm.resultado}
@@ -221,11 +229,11 @@ export default function PresupuestoScreen({
             });
           }}
         />
-        <Text style={s.caption}>
-          Al guardar o compartir, el PDF queda fuera de la protección de NEXA. El cliente ve los precios
-          finales, nunca tus costos ni recargos internos. WhatsApp aparece si está instalado y habilitado para
-          recibir archivos. Revisá el destinatario antes de enviar.
-        </Text>
+        <Ayuda
+          label="Sobre el presupuesto"
+          titulo="Presupuesto y privacidad"
+          mensaje="Cotizar no descuenta stock. El PDF muestra los precios finales, sin costos ni recargos internos. Al guardar o compartir, el archivo sale de la protección de NEXA. Revisá el destinatario antes de enviar."
+        />
         <BotonPrimario
           label="Empezar otro presupuesto"
           variante="secundario"

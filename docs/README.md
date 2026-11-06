@@ -1,6 +1,6 @@
 # Documentación de NEXA
 
-Revisión documental: 29 de octubre de 2026. Esta carpeta acompaña al proyecto y puede formar parte de la entrega académica. Describe el comportamiento implementado, sus límites y las comprobaciones disponibles.
+Revisión documental: 5 de noviembre de 2026. Esta carpeta acompaña al proyecto y puede formar parte de la entrega académica. Describe el comportamiento implementado, sus límites y las comprobaciones disponibles.
 
 ## Qué leer
 
@@ -20,9 +20,9 @@ Revisión documental: 29 de octubre de 2026. Esta carpeta acompaña al proyecto 
 - **Verificado automáticamente:** pasó una comprobación local con reglas puras o adaptadores de prueba.
 - **Verificado en dispositivo:** exige registrar el resultado real en iPhone o Android. No se deduce de una exportación o de una prueba simulada.
 
-El 27/10/2026 se recuperó de GitHub la versión de código `19f8984`, con las últimas mejoras del calendario y del PDF. Pasaron **62 pruebas automatizadas**, la exportación para iOS/Android/web y la comprobación de mapas de fuentes. La revisión documental del 29/10 no es una nueva auditoría de dependencias ni otra sesión de pruebas físicas.
+El 27/10/2026 se recuperó de GitHub la versión de código `19f8984`, con las últimas mejoras del calendario y del PDF. Pasaron **62 pruebas automatizadas**, la exportación para iOS/Android/web y la comprobación de mapas de fuentes. El 05/11 pasaron 65 pruebas de reglas/adaptadores y el recorrido de navegador en escritorio y tamaño móvil: registro, ingreso, foto, persistencia, aislamiento, copia/restauración y presupuesto con logo. No equivale a una sesión de pruebas nativas.
 
-La plantilla PDF corregida se revisó visualmente en escritorio con una propuesta de una página y otra de 30 productos. La confirmación del PDF regenerado por el iPhone y la validación completa de permisos, cámara, sensores, compartir, restauración, calendario y biometría siguen pendientes de registrar en dispositivos.
+La plantilla PDF corregida se revisó visualmente en escritorio con una propuesta de una página y otra de 30 productos. El usuario confirmó que el PDF se ve bien en su iPhone. La validación completa de permisos, cámara, sensores, compartir, restauración, calendario y biometría sigue pendiente de registrar en dispositivos.
 
 ## Entornos
 
@@ -30,7 +30,7 @@ La plantilla PDF corregida se revisó visualmente en escritorio con una propuest
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Expo Go compatible con SDK 57 | Perfiles locales con PIN, inventario, ventas, cámara/QR, sensores y exportaciones implementados. Requieren sus permisos y pruebas físicas. Calendario y Face ID de iPhone muestran su limitación. |
 | Compilación propia            | Incluye los módulos configurados para calendario y biometría compatible. No se ha generado ni validado una compilación propia en dispositivos.                                                    |
-| Web                           | Vista de ejemplo de catálogo/dashboard. No registra perfiles ni guarda datos protegidos ni simula funciones nativas.                                                                              |
+| Web                           | Cuentas locales con PIN, inventario, fotos, ventas, marca, presupuestos, impresión y copia .nexa. Web Crypto + IndexedDB; requiere HTTPS/localhost. No hay sincronización ni funciones nativas simuladas.                                                                              |
 
 ## Dos respaldos diferentes
 

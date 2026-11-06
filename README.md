@@ -9,7 +9,7 @@ npm ci
 npx expo start --go --clear
 ```
 
-Abrí el QR con Expo Go compatible con SDK 57. La web permite revisar el catálogo y dashboard de ejemplo; el registro y la persistencia protegida requieren el teléfono. El recorrido de inventario, ventas, presupuestos y perfiles usa PIN en Expo Go. Face ID en iOS y el calendario son funciones adicionales que requieren una compilación propia; Expo Go muestra su limitación.
+Abrí el QR con Expo Go compatible con SDK 57. En computadora, ejecutá `npm run web`: permite crear cuentas locales, ingresar con PIN y guardar inventario, fotos, ventas, marca y presupuestos. Requiere HTTPS o localhost y almacenamiento del sitio habilitado. El recorrido de inventario, ventas, presupuestos y perfiles usa PIN en Expo Go. Face ID en iOS y el calendario son funciones adicionales que requieren una compilación propia; Expo Go muestra su limitación.
 
 ## Documentación
 
@@ -18,7 +18,7 @@ El [índice de documentación](docs/README.md) explica qué contiene cada archiv
 ## Acceso y funciones
 
 - Invitado: catálogo y dashboard con datos ficticios, sin modificar inventario ni acceder a datos personales.
-- Usuario local: inventario, ventas, análisis, marca y presupuesto propios en este dispositivo. No hay sincronización entre celulares.
+- Usuario local: inventario, ventas, análisis, marca y presupuesto propios en este dispositivo o navegador. No hay sincronización entre equipos.
 - PIN de seis dígitos; bloqueo al pasar a segundo plano; biometría opcional según dispositivo y compilación.
 - Alta y edición de productos, fotos, búsqueda, categorías, reposición y etiquetas QR.
 - Venta y descuento de stock atómicos; anulación idempotente y valores históricos conservados.
@@ -59,7 +59,7 @@ Bottom Tabs con Stacks anidados tipados. Las rutas pasan identificadores. Las es
 
 ## Seguridad y alcance
 
-Datos de inventario, ventas, marca, borrador y fotos se cifran con AES-256-GCM. La clave del dispositivo se conserva en SecureStore. El PIN usa PBKDF2-SHA256 con salt; el control de intentos persiste. Las capturas y la vista del selector de aplicaciones se protegen donde la plataforma permite hacerlo.
+Datos de inventario, ventas, marca, borrador y fotos se cifran con AES-256-GCM. En el teléfono, la clave se conserva en SecureStore; en web, es una clave AES no exportable de Web Crypto guardada en IndexedDB. El navegador no ofrece las protecciones de SecureStore. Borrar los datos del sitio puede eliminar el acceso. El PIN usa PBKDF2-SHA256 con salt; el control de intentos persiste. Las capturas y la vista del selector de aplicaciones se protegen donde la plataforma permite hacerlo.
 
 Es acceso local, sin servidor ni recuperación de claves. El PDF compartido sale de la protección de la aplicación. Ver [alcance y límites](docs/SEGURIDAD.md).
 
@@ -69,7 +69,7 @@ La revisión de producto, funciones nativas y comparación con Sortly/Zoho está
 
 ## Copia y recuperación del inventario
 
-Desde **Mi espacio → Copia y recuperación del inventario**, elegí una contraseña de 12 a 128 caracteres, repetila y exportá el archivo cifrado `.nexa` al destino del teléfono que prefieras. Verificá que se guardó: cerrar o cancelar el menú no garantiza que exista la copia.
+Desde **Mi espacio → Copias de seguridad**, elegí una contraseña de 12 a 128 caracteres, repetila y exportá el archivo cifrado `.nexa` al destino del teléfono que prefieras; en navegador se descarga el archivo. Verificá que se guardó: cerrar o cancelar el menú no garantiza que exista la copia.
 
 Incluye productos, SKU, etiquetas, cantidades, precios, costos, ventas activas y anuladas, movimientos, fotos, marca, logo, presupuestos guardados y borrador. **No incluye perfiles, PIN ni los archivos PDF ya compartidos:** las propuestas guardadas permiten generarlos otra vez. La contraseña es independiente del PIN; NEXA no la conserva ni la puede recuperar. Límite: 30 MB. Se siguen leyendo las copias antiguas de inventario (versión 1); las nuevas copias completas usan versión 2.
 
@@ -91,6 +91,10 @@ npx expo export --platform all --source-maps
 npm run verify:bundle
 ```
 
-Última ejecución registrada: 27 de octubre de 2026, sobre la versión recuperada de GitHub. Pasaron 62 pruebas, la exportación de iOS/Android/web y la revisión de mapas de fuentes. Las pruebas cubren stock, dinero, aislamiento, cifrado, recuperación, permisos y resultados de calendario, guardado/adjuntos PDF y cálculos del nivel. Los adaptadores nativos se simulan: estas verificaciones no sustituyen las pruebas físicas ni confirman entrega de mensajes. El PDF corregido tiene revisión visual de escritorio; queda pendiente confirmar su resultado en iPhone.
+Verificación del 05/11/2026: 65 pruebas de reglas y adaptadores, más el recorrido real de navegador en escritorio (1280 × 820) y tamaño móvil (390 × 844). También pasaron la exportación iOS/Android/web, la revisión de mapas de fuentes y la compatibilidad de Expo. Las pruebas cubren stock, dinero, aislamiento, cifrado, recuperación, permisos y resultados de calendario, guardado/adjuntos PDF y cálculos del nivel. Los adaptadores nativos se simulan: estas verificaciones no sustituyen las pruebas físicas ni confirman entrega de mensajes. El usuario confirmó que el PDF corregido se ve bien en su iPhone. Esa confirmación no reemplaza las comprobaciones nativas pendientes.
+
+Para repetir la prueba de navegador, mantené abierto `npx expo start --web --localhost --port 8085` y ejecutá `npm run test:web` en otra terminal. Requiere Google Chrome instalado; `NEXA_WEB_URL` cambia la dirección y `NEXA_BROWSER_CHANNEL` permite elegir otro canal compatible con Playwright. La prueba usa perfiles aislados y datos ficticios; sus capturas quedan en `.expo/verificacion-web`.
+
+Comprueba registro, PIN incorrecto, reingreso y recarga, producto con foto, aislamiento entre cuentas, invitado, impresión con logo y SKU, descarga/restauración de una copia y conservación de registros al perder la clave. El tamaño móvil del navegador no equivale a probar iOS nativo.
 
 [Índice de documentación](docs/README.md) · [Pruebas en iPhone](docs/IPHONE.md) · [Calendario y PDF](docs/CALENDARIO-Y-PDF.md)

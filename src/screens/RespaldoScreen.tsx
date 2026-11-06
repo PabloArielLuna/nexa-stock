@@ -2,6 +2,7 @@ import React from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRespaldoViewModel } from '../viewmodels/useRespaldoViewModel';
 import BotonPrimario from '../components/BotonPrimario';
+import Ayuda from '../components/Ayuda';
 import { colors } from '../styles/colors';
 import { globalStyles } from '../styles/global';
 import { confirmar } from '../utils/dialogos';
@@ -15,22 +16,10 @@ export default function RespaldoScreen() {
       keyboardVerticalOffset={90}
     >
       <ScrollView contentContainerStyle={globalStyles.scrollContent} keyboardShouldPersistTaps="handled">
-        <Text style={s.title}>Tu inventario, a salvo.</Text>
-        <Text style={s.body}>
-          Guardá una copia cifrada fuera de NEXA para cambiar de celular o pasar de Expo Go a tu app
-          instalada.
-        </Text>
+        <Text style={s.title}>Copias de seguridad</Text>
         <View style={[globalStyles.card, { gap: 16 }]}>
-          <Text style={s.heading}>Qué incluye esta copia</Text>
-          <Text style={s.body}>
-            Productos, SKU, precios, costos, stock, fotos, etiquetas QR, ventas activas y anuladas,
-            movimientos, marca, logo, presupuestos guardados y borrador. No incluye perfiles, PIN ni archivos
-            PDF ya compartidos; las propuestas se pueden volver a generar.
-          </Text>
-          <Text style={s.body}>
-            Elegí una contraseña diferente del PIN, de 12 a 128 caracteres. Necesitarás el archivo y esa
-            contraseña para recuperar los datos. NEXA no guarda ni recupera esta contraseña.
-          </Text>
+          <Text style={s.heading}>Exportar copia</Text>
+          <Text style={s.body}>Contraseña de 12 a 128 caracteres. Guardala: no se recupera.</Text>
           <TextInput
             accessibilityLabel="Contraseña de la copia"
             placeholder="Contraseña de la copia"
@@ -64,17 +53,16 @@ export default function RespaldoScreen() {
             deshabilitado={!vm.puedeExportar}
             onPress={() => void vm.exportar()}
           />
-          <Text style={s.body}>
-            Elegí Guardar en Archivos u otro destino del teléfono y verificá que el archivo .nexa se haya
-            guardado. Tamaño máximo: 30 MB. No es una copia automática en la nube.
-          </Text>
+          <Ayuda
+            label="Qué incluye la copia"
+            titulo="Copia cifrada"
+            mensaje="Incluye inventario, fotos, QR, ventas, movimientos, marca, logo y propuestas. No incluye PIN ni PDFs exportados. Guardá el archivo .nexa y su contraseña fuera de NEXA. Límite: 30 MB. No es una copia automática en la nube."
+          />
         </View>
         <View style={[globalStyles.card, { gap: 16 }]}>
           <Text style={s.heading}>Recuperar una copia</Text>
           <Text style={s.body}>
-            Ingresá su contraseña arriba y seleccioná el archivo. Primero verás un resumen; todavía no
-            modifica tu inventario. Para confirmar la restauración necesitás un perfil sin productos ni
-            ventas.
+            Ingresá la contraseña de la copia arriba. La restauración requiere un perfil vacío.
           </Text>
           <BotonPrimario
             label="Seleccionar y verificar copia"
@@ -128,7 +116,7 @@ export default function RespaldoScreen() {
   );
 }
 const s = StyleSheet.create({
-  title: { fontSize: 30, color: colors.text, fontWeight: '700' },
+  title: { fontSize: 24, color: colors.text, fontWeight: '700' },
   heading: { fontSize: 20, color: colors.text, fontWeight: '600' },
   body: { color: colors.textMuted, lineHeight: 23 },
   input: {

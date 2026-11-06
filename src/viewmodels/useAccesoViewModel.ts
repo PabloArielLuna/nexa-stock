@@ -1,68 +1,73 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Perfil, usePerfil } from '../context/PerfilContext';
 import { pinValido } from '../services/credenciales';
-import { Platform } from 'react-native';
 
-/** Estado del formulario de acceso; la vista solo presenta campos y acciones. */
 export function useAccesoViewModel() {
   const sesion = usePerfil();
+  const [modo, setModo] = useState<'ingresar' | 'crear'>('ingresar');
   const [nombre, setNombre] = useState('');
   const [pin, setPin] = useState('');
-  const [seleccionado, setSeleccionado] = useState<Perfil | null>(null);
+  const [confirmacion, setConfirmacion] = useState('');
   const [error, setError] = useState('');
   const [guardando, setGuardando] = useState(false);
-  const repetido =
-    !seleccionado && sesion.perfiles.some((p) => p.nombre.toLowerCase() === nombre.trim().toLowerCase());
-  async function crear() {
+  const enviando = useRef(false);
+  const seleccionado =
+    sesion.perfiles.find((p) => p.nombre.toLowerCase() === nombre.trim().toLowerCase()) ?? null;
+  async function enviar(biometria = false) {
+    if (enviando.current) return;
+    enviando.current = true;
     setGuardando(true);
     setError('');
     try {
-      if (seleccionado) await sesion.entrar(seleccionado, pin);
-      else await sesion.crear(nombre, pin);
+      if (modo === 'crear') {
+        if (pin !== confirmacion) throw new Error('Los PIN no coinciden.');
+        await sesion.crear(nombre, pin);
+      } else {
+        if (!seleccionado)
+          throw new Error(
+            'No encontramos esa cuenta en este dispositivo. Revisá el nombre o creá una cuenta.',
+          );
+        if (biometria) await sesion.entrarConBiometria(seleccionado);
+        else await sesion.entrar(seleccionado, pin);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No pudimos completar el acceso.');
     } finally {
-      setGuardando(false);
-    }
-  }
-  function elegir(perfil: Perfil | null) {
-    setSeleccionado(perfil);
-    setPin('');
-    setError('');
-  }
-  async function ingresarConBiometria() {
-    if (!seleccionado || guardando) return;
-    setGuardando(true);
-    setError('');
-    try {
-      await sesion.entrarConBiometria(seleccionado);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ingresá con tu PIN.');
-    } finally {
+      enviando.current = false;
       setGuardando(false);
     }
   }
   return {
-    accesoDisponible: Platform.OS !== 'web',
-    perfiles: sesion.perfiles,
-    errorSesion: sesion.error,
-    explorar: sesion.explorar,
+    modo,
     nombre,
     setNombre,
     pin,
     setPin,
+    confirmacion,
+    setConfirmacion,
     seleccionado,
     error,
     guardando,
-    repetido,
-    crear,
-    elegir,
-    ingresarConBiometria,
+    errorSesion: sesion.error,
+    explorar: sesion.explorar,
+    perfiles: sesion.perfiles,
+    elegir: (p: Perfil) => {
+      setNombre(p.nombre);
+      setPin('');
+      setError('');
+    },
+    cambiarModo: (m: 'ingresar' | 'crear') => {
+      if (enviando.current) return;
+      setModo(m);
+      setPin('');
+      setConfirmacion('');
+      setError('');
+    },
+    enviar,
     puedeEnviar:
-      Platform.OS !== 'web' &&
-      (seleccionado !== null || nombre.trim().length >= 2) &&
+      !sesion.error &&
+      nombre.trim().length >= 2 &&
       pinValido(pin) &&
-      !repetido &&
-      !sesion.error,
+      (modo === 'ingresar' || pin === confirmacion),
   };
 }

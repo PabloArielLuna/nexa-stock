@@ -31,7 +31,7 @@ const ResumenScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <ScrollView style={globalStyles.screen} contentContainerStyle={globalStyles.scrollContent}>
-      <Encabezado titulo="La visión completa." detalle="Entendé tu negocio. Decidí con información." />
+      <Encabezado titulo="Resumen" />
 
       {/* Grilla de indicadores: flexWrap + flexBasis 45% = 2 columnas */}
       <View style={styles.grilla}>

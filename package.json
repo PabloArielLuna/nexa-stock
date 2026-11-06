@@ -10,7 +10,7 @@
     "@react-navigation/bottom-tabs": "^7.19.2",
     "@react-navigation/native": "^7.4.1",
     "@react-navigation/native-stack": "^7.19.2",
-    "expo": "~57.0.25",
+    "expo": "~57.0.32",
     "expo-calendar": "~57.0.6",
     "expo-camera": "~57.0.6",
     "expo-constants": "~57.0.22",
@@ -18,8 +18,8 @@
     "expo-document-picker": "~57.0.3",
     "expo-file-system": "~57.0.7",
     "expo-haptics": "~57.0.3",
-    "expo-image-manipulator": "~57.0.21",
-    "expo-image-picker": "~57.0.20",
+    "expo-image-manipulator": "~57.0.22",
+    "expo-image-picker": "~57.0.21",
     "expo-linear-gradient": "~57.0.2",
     "expo-local-authentication": "~57.0.3",
     "expo-mail-composer": "~57.0.2",
@@ -27,7 +27,7 @@
     "expo-screen-capture": "~57.0.4",
     "expo-secure-store": "~57.0.4",
     "expo-sensors": "~57.0.3",
-    "expo-sharing": "~57.0.24",
+    "expo-sharing": "~57.0.25",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "playwright": "1.62.1",
     "prettier": "^3.9.10",
     "typescript": "~6.0.3"
   },
@@ -51,7 +52,8 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.cjs",
     "check": "npm run typecheck && npm test",
-    "verify:bundle": "node scripts/verificar-bundle.cjs"
+    "verify:bundle": "node scripts/verificar-bundle.cjs",
+    "test:web": "node scripts/verificar-web.cjs"
   },
   "private": true
 }

@@ -1,4 +1,14 @@
-# Dependencias: revisión del 22 de octubre de 2026
+# Dependencias
+
+## Revisión del 5 de noviembre de 2026
+
+Se alinearon las seis actualizaciones recomendadas por Expo dentro del SDK 57: Expo 57.0.32, metro-runtime 57.0.18, constants 57.0.23, image-manipulator 57.0.22, image-picker 57.0.21 y sharing 57.0.25. React Native permanece en 0.86.3. Se agregó Playwright 1.62.1 solo como herramienta de desarrollo para el recorrido de navegador.
+
+Antes de estas actualizaciones, npm audit informó 11 avisos (3 altos, 7 moderados y 1 bajo). Después quedaron **4 moderados, 0 altos y 0 críticos**: glob 13.0.6 y minimatch 10.2.6 dentro de @expo/fingerprint, más sus propagaciones a fingerprint y Expo. Los avisos corresponden a [recorrido de archivos tras cancelar glob](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) y [consumo de recursos en minimatch](https://github.com/advisories/GHSA-g3hv-75wg-m249). No son cuatro fallos independientes en NEXA.
+
+La CLI y config usan glob 14.0.3/minimatch 11.0.5; fingerprint conserva versiones anteriores. La solución forzada sugerida por npm rebaja Expo a 53.0.11: no se aplicó. Estos pendientes requieren una actualización compatible de las herramientas. El control de mapas de fuentes incluye glob y minimatch además de los paquetes revisados anteriormente; no sustituye una auditoría de módulos nativos.
+
+## Registro histórico del 22 de octubre de 2026
 
 Se agregaron `expo-calendar ~57.0.6` y `expo-mail-composer ~57.0.2`, alineados con el catálogo de Expo SDK 57 para seguimientos y adjuntos por correo. No se incorporó `react-native-calendar-events`, cuyo repositorio está discontinuado. Las instalaciones mantuvieron los 15 avisos ya documentados; estos módulos no resolvieron los pendientes de las herramientas.
 

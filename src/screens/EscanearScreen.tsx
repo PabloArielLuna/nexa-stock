@@ -70,11 +70,11 @@ export default function EscanearScreen({ navigation, route }: Props) {
   if (vincularId && invitado) return <AccesoRequeridoScreen />;
   return (
     <ScrollView style={s.root} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
-      <Text style={s.title}>{vincularId ? 'Tu QR. Tu producto.' : 'Apuntá. Encontrá. Vendé.'}</Text>
+      <Text style={s.title}>{vincularId ? 'Vincular QR' : 'Escanear'}</Text>
       <Text style={s.body}>
         {vincularId
           ? `Vinculá una etiqueta impresa a ${destino?.sku ?? 'este producto'} · ${destino?.nombre ?? 'Producto no encontrado'}. Primero leela y después confirmá. Solo se vincula un QR propio por producto.`
-          : 'Leé una etiqueta NEXA o un QR propio vinculado para ver SKU, nombre, precio y stock actuales.'}
+          : 'Escaneá una etiqueta o ingresá el SKU.'}
       </Text>
       {Platform.OS !== 'web' && permiso?.granted && focused && aplicacionActiva && !pausado ? (
         <View style={s.camera}>
@@ -101,7 +101,7 @@ export default function EscanearScreen({ navigation, route }: Props) {
           <Ionicons name="scan-outline" size={64} color={colors.primary} />
           <Text style={s.body}>
             {Platform.OS === 'web'
-              ? 'Abrí NEXA en tu celular para usar el escáner. Acá podés ingresar el código manual.'
+              ? 'En la compu, buscá con el SKU. La cámara está disponible en la app móvil.'
               : 'El permiso de cámara se usa solamente para leer etiquetas.'}
           </Text>
           {Platform.OS !== 'web' && !permiso?.granted && (

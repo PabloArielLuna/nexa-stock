@@ -8,6 +8,7 @@ import { typography } from '../styles/typography';
 import FotoProducto from './FotoProducto';
 
 type Props = {
+  ocupado?: boolean;
   fotoUri: string | null;
   categoria: CategoriaId | null;
   onTomarFoto: () => void;
@@ -16,15 +17,35 @@ type Props = {
 };
 
 /** Vista previa de la foto + botones de cámara, galería y quitar. */
-const SelectorFoto: React.FC<Props> = ({ fotoUri, categoria, onTomarFoto, onElegirDeGaleria, onQuitar }) => (
+const SelectorFoto: React.FC<Props> = ({
+  fotoUri,
+  categoria,
+  onTomarFoto,
+  onElegirDeGaleria,
+  onQuitar,
+  ocupado = false,
+}) => (
   <View style={styles.contenedor}>
     <Text style={typography.label}>Foto (opcional)</Text>
     <View style={styles.fila}>
       <FotoProducto uri={fotoUri} categoria={categoria ?? 'otros'} tamanio={84} />
       <View style={styles.acciones}>
-        <Accion icono="camera" label="Sacar foto" onPress={onTomarFoto} />
-        <Accion icono="images" label="Elegir de la galería" onPress={onElegirDeGaleria} />
-        {fotoUri && <Accion icono="trash-outline" label="Quitar foto" onPress={onQuitar} peligro />}
+        <Accion icono="camera" label="Sacar foto" onPress={onTomarFoto} deshabilitado={ocupado} />
+        <Accion
+          icono="images"
+          label="Elegir de la galería"
+          onPress={onElegirDeGaleria}
+          deshabilitado={ocupado}
+        />
+        {fotoUri && (
+          <Accion
+            icono="trash-outline"
+            label="Quitar foto"
+            onPress={onQuitar}
+            peligro
+            deshabilitado={ocupado}
+          />
+        )}
       </View>
     </View>
   </View>
@@ -35,12 +56,21 @@ type AccionProps = {
   label: string;
   onPress: () => void;
   peligro?: boolean;
+  deshabilitado?: boolean;
 };
 
-const Accion: React.FC<AccionProps> = ({ icono, label, onPress, peligro = false }) => {
+const Accion: React.FC<AccionProps> = ({ icono, label, onPress, peligro = false, deshabilitado = false }) => {
   const color = peligro ? colors.error : colors.primary;
   return (
-    <TouchableOpacity style={styles.accion} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: deshabilitado }}
+      disabled={deshabilitado}
+      style={styles.accion}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
       <Ionicons name={icono} size={17} color={color} />
       <Text style={[styles.textoAccion, { color }]}>{label}</Text>
     </TouchableOpacity>
@@ -57,7 +87,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    paddingVertical: 7,
+    paddingVertical: 10,
+    minHeight: 44,
     paddingHorizontal: spacing.sm,
     borderRadius: radius.sm,
   },

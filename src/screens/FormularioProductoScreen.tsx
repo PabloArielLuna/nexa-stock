@@ -201,6 +201,7 @@ const FormularioProductoScreen: React.FC<Props> = ({ navigation, route }) => {
         {/* --- Foto (cámara / galería) --- */}
         <View style={globalStyles.card}>
           <SelectorFoto
+            ocupado={vm.cargandoFoto}
             fotoUri={form.fotoUri}
             categoria={form.categoria}
             onTomarFoto={vm.tomarFoto}
